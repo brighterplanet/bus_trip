@@ -1,8 +1,8 @@
-  require 'bundler'
-  Bundler.setup
+require 'bundler'
+Bundler.setup
 
-  require 'cucumber'
-  require 'cucumber/formatter/unicode'
+require 'cucumber'
+require 'cucumber/formatter/unicode'
 
-  require 'sniff'
-  Sniff.init File.join(File.dirname(__FILE__), '..', '..'), :earth => :bus_trip
+require 'sniff'
+Sniff.init File.join(File.dirname(__FILE__), '..', '..'), :earth => :bus_trip

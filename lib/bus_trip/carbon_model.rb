@@ -1,7 +1,10 @@
+require 'leap'
+
 module BrighterPlanet
   module BusTrip
     def self.included(base)
       base.extend ::Leap::Subject
+      base.extend FastTimestamp
       base.decide :emission, :with => :characteristics do
         committee :emission do # returns kg CO2
           quorum 'from fuel and passengers', :needs => [:diesel_consumed, :gasoline_consumed, :alternative_fuels_consumed, :passengers, :distance, :bus_class] do |characteristics|
