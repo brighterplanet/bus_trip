@@ -1,5 +1,5 @@
 rvm 1.8.7
-project=`basename `pwd``
+project=`basename \`pwd\``
 if rvm gemset list | grep $project
 then
   rvm 1.8.7@$project
