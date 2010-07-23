@@ -1,3 +1,5 @@
-  source :rubygems
+gem 'sniff', :path => ENV['LOCAL_SNIFF'] if ENV['LOCAL_SNIFF']
 
-  gemspec :path => '.'
+source :rubygems
+
+gemspec :path => '.'
