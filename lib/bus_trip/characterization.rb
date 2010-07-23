@@ -1,3 +1,5 @@
+require 'characterizable'
+
 module BrighterPlanet
   module BusTrip
     module Characterization

@@ -1,7 +1,7 @@
 require 'summary_judgement'
 
 module BrighterPlanet
-  module Flight
+  module BusTrip
     module Summarization
       def self.included(base)
         base.extend SummaryJudgement

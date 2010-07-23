@@ -1,5 +1,7 @@
+require 'bus_trip'
+
 class BusTripRecord < ActiveRecord::Base
-  include Emitter
+  include Sniff::Emitter
   include BrighterPlanet::BusTrip
   belongs_to :bus_class
 
