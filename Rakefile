@@ -68,11 +68,15 @@ rescue LoadError
   end
 end
 
-require 'cucumber'
-require 'cucumber/rake/task'
+begin
+  require 'cucumber'
+  require 'cucumber/rake/task'
 
-Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "features --format pretty"
+  Cucumber::Rake::Task.new(:features) do |t|
+    t.cucumber_opts = "features --format pretty"
+  end
+rescue LoadError
+  puts 'Cucumber not available. `gem install cucumber`'
 end
 
 task :test => :features
