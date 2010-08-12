@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bus_trip (0.0.6)
+    bus_trip (0.0.7)
       emitter (>= 0.0.1)
 
 GEM
