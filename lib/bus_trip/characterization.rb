@@ -10,6 +10,7 @@ module BrighterPlanet
           has :duration # measures time in minutes
           has :distance_estimate, :trumps => :duration, :measures => :length
         end
+        base.add_implicit_characteristics
       end
     end
   end
