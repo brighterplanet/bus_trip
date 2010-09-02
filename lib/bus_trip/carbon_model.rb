@@ -10,7 +10,7 @@ module BrighterPlanet
           committee :emission do # returns kg CO2
             quorum 'from fuel and passengers', :needs => [:diesel_consumed, :gasoline_consumed, :alternative_fuels_consumed, :passengers, :distance, :bus_class] do |characteristics|
               #((       litres diesel         ) * (  kilograms CO2 / litre diesel   ) + (       litres gasoline          ) * (     kilograms CO2 / kWh            ) + (     litre-equivs alternative fuel       ) * (kilograms CO2 / litre-equiv alternative fuel))
-              (characteristics[:diesel_consumed] * BusTrip.bus_trip_model.research(:diesel_emission_factor) + characteristics[:gasoline_consumed] * BusTrip.bus_trip_model.research(:gasoline_emission_factor) + characteristics[:alternative_fuels_consumed] * BusTrip.bus_trip_model.research(:alternative_fuels_emission_factor) + characteristics[:distance] * characteristics[:bus_class].fugitive_air_conditioning_emission) / characteristics[:passengers]
+              (characteristics[:diesel_consumed] * research(:diesel_emission_factor) + characteristics[:gasoline_consumed] * research(:gasoline_emission_factor) + characteristics[:alternative_fuels_consumed] * research(:alternative_fuels_emission_factor) + characteristics[:distance] * characteristics[:bus_class].fugitive_air_conditioning_emission) / characteristics[:passengers]
             end
           end
           
@@ -85,6 +85,17 @@ module BrighterPlanet
               BusClass.fallback
             end
           end
+        end
+      end
+
+      def self.research(key)
+        case key
+        when :diesel_emission_factor
+          22.450.pounds_per_gallon.to(:kilograms_per_litre) # CO2 / diesel  https://brighterplanet.sifterapp.com/projects/30/issues/454
+        when :gasoline_emission_factor
+          23.681.pounds_per_gallon.to(:kilograms_per_litre) # CO2 / gasoline  https://brighterplanet.sifterapp.com/projects/30/issues/454
+        when :alternative_fuels_emission_factor
+          9.742.pounds_per_gallon.to(:kilograms_per_litre) # CO2 / equiv alternative fuels  https://brighterplanet.sifterapp.com/projects/30/issues/454
         end
       end
     end

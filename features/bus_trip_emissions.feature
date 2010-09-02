@@ -1,13 +1,33 @@
 Feature: Bus Trip Emissions Calculations
   The bus trip model should generate correct emission calculations
 
-  Scenario Outline: Standard Calculations for bus trips
-    Given a bus trip has "distance" of "<source>"
+  Scenario Outline: Calculations for bus trips with just timeframe and distance
+    Given a bus trip has "distance_estimate" of "<distance>"
+    And it has "timeframe" of "<timeframe>"
+    When emissions are calculated
+    Then the emission value should be within 0.1 kgs of <emission>
+    Examples:
+      | timeframe             | distance |  emission |
+      | 2010-08-01/2010-08-01 |       10 |       1.2 |
+      | 2010-08-01/2010-08-11 |      400 |      51.0 |
+
+  Scenario Outline: Standard Calculations for bus trips with timeframe and bus class
+    Given a bus trip has "distance_estimate" of "<distance>"
+    And it has "bus_class.name" "<bus_class>"
+    And it has "timeframe" of "<timeframe>"
+    When emissions are calculated
+    Then the emission value should be within 0.1 kgs of <emission>
+    Examples:
+      | timeframe             | distance |      bus_class | emission |
+      | 2010-08-01/2010-08-01 |       10 |   city transit |      3.4 |
+      | 2010-08-01/2010-08-11 |      400 | regional coach |     51.4 |
+
+  Scenario Outline: Calculations involving fuel types
+    Given a bus trip has "distance_estimate" of "<distance>"
     And it used "bus_class.gasoline_intensity" "<gasoline>"
     And it used "bus_class.diesel_intensity" "<diesel>"
     And it used "bus_class.alternative_fuels_intensity" "<alternative>"
     And it has "bus_class.passengers" "<passengers>"
-    And it has "distance_estimate" of "<distance>"
     And it has "bus_class.name" "<bus_class>"
     When emissions are calculated
     Then the emission value should be within 0.1 kgs of <emission>
