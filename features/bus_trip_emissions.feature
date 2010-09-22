@@ -5,7 +5,7 @@ Feature: Bus Trip Emissions Calculations
     Given a bus trip has "distance_estimate" of "<distance>"
     And it has "timeframe" of "<timeframe>"
     When emissions are calculated
-    Then the emission value should be within 0.1 kgs of <emission>
+    Then the emission value should be within "0.1" kgs of "<emission>"
     Examples:
       | timeframe             | distance |  emission |
       | 2010-08-01/2010-08-01 |       10 |       1.2 |
@@ -13,10 +13,10 @@ Feature: Bus Trip Emissions Calculations
 
   Scenario Outline: Standard Calculations for bus trips with timeframe and bus class
     Given a bus trip has "distance_estimate" of "<distance>"
-    And it has "bus_class.name" "<bus_class>"
+    And it has "bus_class.name" of "<bus_class>"
     And it has "timeframe" of "<timeframe>"
     When emissions are calculated
-    Then the emission value should be within 0.1 kgs of <emission>
+    Then the emission value should be within "0.1" kgs of "<emission>"
     Examples:
       | timeframe             | distance |      bus_class | emission |
       | 2010-08-01/2010-08-01 |       10 |   city transit |      3.4 |
@@ -24,13 +24,13 @@ Feature: Bus Trip Emissions Calculations
 
   Scenario Outline: Calculations involving fuel types
     Given a bus trip has "distance_estimate" of "<distance>"
-    And it used "bus_class.gasoline_intensity" "<gasoline>"
-    And it used "bus_class.diesel_intensity" "<diesel>"
-    And it used "bus_class.alternative_fuels_intensity" "<alternative>"
-    And it has "bus_class.passengers" "<passengers>"
-    And it has "bus_class.name" "<bus_class>"
+    And it has "bus_class.gasoline_intensity" of "<gasoline>"
+    And it has "bus_class.diesel_intensity" of "<diesel>"
+    And it has "bus_class.alternative_fuels_intensity" of "<alternative>"
+    And it has "bus_class.passengers" of "<passengers>"
+    And it has "bus_class.name" of "<bus_class>"
     When emissions are calculated
-    Then the emission value should be within 0.1 kgs of <emission>
+    Then the emission value should be within "0.1" kgs of "<emission>"
     Examples:
       | gasoline | diesel | alternative | passengers | distance | bus_class      | emission |
       |       40 |        |             |         25 |      328 | regional coach |     41.8 |
