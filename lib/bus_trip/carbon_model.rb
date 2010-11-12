@@ -83,12 +83,9 @@ module BrighterPlanet
           # Returns the `distance` travelled (*km*).
           committee :distance do
             #### Distance from client input
-            # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
+            # **Complies:** All
             #
-            # Uses the client-input `distance estimate` (*km*).
-            quorum 'from distance estimate', :needs => :distance_estimate do |characteristics|
-              characteristics[:distance_estimate]
-            end
+            # Uses the client-input `distance` (*km*).
             
             #### Distance from duration
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
@@ -106,13 +103,6 @@ module BrighterPlanet
               characteristics[:bus_class].distance
             end
           end
-          
-          ### Distance estimate calculation
-          # Returns the `distance estimate` (*km*).
-            #### Distance estimte from client input
-            # **Complies:** All
-            #
-            # Uses the client-input `distance estimate` (*km*).
           
           ### Duration calculation
           # Returns the bus trip's `duration` (*minutes*).

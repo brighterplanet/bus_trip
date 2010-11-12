@@ -31,13 +31,6 @@ Feature: Bus Trip Committee Calculations
     When the "diesel_intensity" committee is calculated
     Then the conclusion of the committee should be "0.423386"
   
-  Scenario: Distance from distance estimate
-    Given a bus trip emitter
-    And a characteristic "distance_estimate" of "60"
-    When the "distance" committee is calculated
-    Then the committee should have used quorum "from distance estimate"
-    And the conclusion of the committee should be "60.0"
-  
   Scenario: Distance from duration
     Given a bus trip emitter
     And a characteristic "duration" of "60"
@@ -46,14 +39,14 @@ Feature: Bus Trip Committee Calculations
     And the "distance" committee is calculated
     Then the committee should have used quorum "from duration"
     And the conclusion of the committee should be "24.0919"
-
+  
   Scenario: Distance from bus class
     Given a bus trip emitter
     And a characteristic "bus_class.name" of "city transit"
     When the "distance" committee is calculated
     Then the committee should have used quorum "from bus class"
     Then the conclusion of the committee should be "7.19377"
-
+  
   Scenario: Alternative fuels consumed from distance and alternative fuels intensity
     Given a bus trip emitter
     And a characteristic "alternative_fuels_intensity" of "2"
@@ -67,7 +60,7 @@ Feature: Bus Trip Committee Calculations
     And a characteristic "distance" of "10"
     When the "gasoline_consumed" committee is calculated
     Then the conclusion of the committee should be "20"
-    
+  
   Scenario: Diesel consumed from distance and diesel intensity
     Given a bus trip emitter
     And a characteristic "diesel_intensity" of "2"

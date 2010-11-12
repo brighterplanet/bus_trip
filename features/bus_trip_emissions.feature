@@ -6,8 +6,8 @@ Feature: Bus Trip Emissions Calculations
     When emissions are calculated
     Then the emission value should be within "0.1" kgs of "1.11982"
   
-  Scenario: Calculations for bus trip from distance estimate
-    Given a bus trip has "distance_estimate" of "100"
+  Scenario: Calculations for bus trip from distance
+    Given a bus trip has "distance" of "100"
     When emissions are calculated
     Then the emission value should be within "0.1" kgs of "12.76743"
   

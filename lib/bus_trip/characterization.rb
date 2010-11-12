@@ -4,8 +4,8 @@ module BrighterPlanet
       def self.included(base)
         base.characterize do
           has :bus_class
-          has :duration # measures time in minutes
-          has :distance_estimate, :trumps => :duration, :measures => :length
+          has :duration
+          has :distance, :measures => :length
         end
       end
     end
