@@ -57,7 +57,7 @@ end
 require_or_fail('sniff', 'Sniff gem not found, sniff tasks unavailable') do
   require 'sniff/rake_task'
   Sniff::RakeTask.new(:console) do |t|
-    t.earth_domains = :air
+    t.earth_domains = [:bus, :fuel]
   end
 end
 
