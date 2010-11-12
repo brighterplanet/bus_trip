@@ -67,3 +67,24 @@ Feature: Bus Trip Committee Calculations
     And a characteristic "distance" of "10"
     When the "diesel_consumed" committee is calculated
     Then the conclusion of the committee should be "20"
+  
+  Scenario: Alternative fuels emission factor from default
+    Given a bus trip emitter
+    When the "alternative_fuels_emission_factor" committee is calculated
+    Then the conclusion of the committee should be "1.16735"
+  
+  Scenario: Gasoline emission factor from default
+    Given a bus trip emitter
+    When the "gasoline_emission_factor" committee is calculated
+    Then the conclusion of the committee should be "3.0"
+  
+  Scenario: Diesel emission factor from default
+    Given a bus trip emitter
+    When the "diesel_emission_factor" committee is calculated
+    Then the conclusion of the committee should be "2.0"
+
+  Scenario: Air conditioning emission factor from bus class
+    Given a bus trip emitter
+    And a characteristic "bus_class.name" of "city transit"
+    When the "air_conditioning_emission_factor" committee is calculated
+    Then the conclusion of the committee should be "0.5"
