@@ -6,13 +6,13 @@
 # This model is used by [Brighter Planet](http://brighterplanet.com)'s carbon emission [web service](http://carbon.brighterplanet.com) to estimate the **greenhouse gas emissions of passenger bus travel**.
 #
 ##### Calculations
-# The final estimate is the result of the **calculations** detailed below. These calculations are performed in reverse order, starting with the last calculation listed and finishing with the `emission` calculation. Each calculation is named according to the value it returns.
+# The final estimate is the result of the **calculations** detailed below. These calculations are performed in reverse order, starting with the last calculation listed and finishing with the emission calculation. Each calculation is named according to the `value` it returns.
 #
 ##### Methods
-# To accomodate varying client input, each calculation may have one or more **methods**. These are listed under each calculation in order from most to least preferred. Each method is named according to the values it requires. If any of these values is not available the method will be ignored. If all the methods for a calculation are ignored, the calculation will not return a value. "Default" methods do not require any values, and so a calculation with a default method will always return a value.
+# To accomodate varying client input, each calculation may have one or more **methods**. These are listed under each calculation in order from most to least preferred. Each method is named according to the `values` it requires ('default' methods do not require any values). Methods are ignored if any of the values they require are unvailable. Calculations are ignored if all of their methods are unavailable.
 #
 ##### Standard compliance
-# Each method lists any established calculation standards with which it **complies**. When compliance with a standard is requested, all methods that do not comply with that standard are ignored. This means that any values a particular method requires will have been calculated using a compliant method, because those are the only methods available. If any value did not have a compliant method in its calculation then it would be undefined, and the current method would have been ignored.
+# Each method lists any established calculation standards with which it **complies**. When compliance with a standard is requested, all methods that do not comply with that standard are ignored. This means that any values a particular method requires will have been calculated using a compliant method or will be unavailable.
 #
 ##### Collaboration
 # Contributions to this carbon model are actively encouraged and warmly welcomed. This library includes a comprehensive test suite to ensure that your changes do not cause regressions. All changes should include test coverage for new functionality. Please see [sniff](http://github.com/brighterplanet/sniff#readme), our emitter testing framework, for more information.
@@ -25,21 +25,66 @@ module BrighterPlanet
           ### Emission calculation
           # Returns the `emission` estimate (*kg CO<sub>2</sub>e*)
           committee :emission do
-            #### Emission from fuel and passengers
+            #### Emission from fuel, emission factors, and passengers
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
-            # - Uses a diesel emission factor of 2.69 *kg CO<sub>2</sub>e / l diesel*
-            # - Multiplies `diesel consumed` (*l*) by the diesel emission factor (*kg CO<sub>2</sub>e / l diesel*) to give diesel emissions (*kg CO<sub>2</sub>e*)
-            # - Uses a gasoline emission factor of 2.84 *kg CO<sub>2</sub>e / l gasoline*
-            # - Multiplies `gasoline consumed` (*l*) by the gasoline emission factor (*kg CO<sub>2</sub>e / l gasoline*) to give gasoline emissions (*kg CO<sub>2</sub>e*)
-            # - Uses an alternative fuel emission factor of 1.17 *kg CO<sub>2</sub>e / l fuel*
-            # - Multiplies `alternaive fuel consumed` (*l*) by the alternative fuel emission factor (*kg CO<sub>2</sub>e / l fuel*) to give alternative fuel emissions (*kg CO<sub>2</sub>e*)
-            # - Looks up the [bus class](http://data.brighterplanet.com/bus_classes) fugitive air conditioning emission factor (*kg CO<sub>2</sub>e / km*)
-            # - Multiplies `distance` (*km*) by the fugitive air conditioning emission factor (*kg CO<sub>2</sub>e / km*) to give fugitive air conditioning emissions (*kg CO<sub>2</sub>e*)
-            # - Sums the diesel, gasoline, alternative fuel, and fugitive air conditioning emissions
-            # - Divides by passengers to give emissions per passenger (*kg CO<sub>2</sub>e)
-            quorum 'from fuel and passengers', :needs => [:diesel_consumed, :gasoline_consumed, :alternative_fuels_consumed, :passengers, :distance, :bus_class] do |characteristics|
-              (characteristics[:diesel_consumed] * 22.450.pounds_per_gallon.to(:kilograms_per_litre) + characteristics[:gasoline_consumed] * 23.681.pounds_per_gallon.to(:kilograms_per_litre) + characteristics[:alternative_fuels_consumed] * 9.742.pounds_per_gallon.to(:kilograms_per_litre) + characteristics[:distance] * characteristics[:bus_class].fugitive_air_conditioning_emission) / characteristics[:passengers]
+            # - Multiplies `diesel consumed` (*l*) by the `diesel emission factor` (*kg CO<sub>2</sub>e / l*) to give diesel emissions (*kg CO<sub>2</sub>e*)
+            # - Multiplies `gasoline consumed` (*l*) by the `gasoline emission factor` (*kg CO<sub>2</sub>e / l*) to give gasoline emissions (*kg CO<sub>2</sub>e*)
+            # - Multiplies `alternaive fuel consumed` (*l*) by the `alternative fuels emission factor` (*kg CO<sub>2</sub>e / l*) to give alternative fuels emissions (*kg CO<sub>2</sub>e*)
+            # - Multiplies `distance` (*km*) by the `air conditioning emission factor` (*kg CO<sub>2</sub>e / km*) to give air conditioning emissions (*kg CO<sub>2</sub>e*)
+            # - Sums the diesel, gasoline, alternative fuels, and air conditioning emissions and divides by passengers to give emissions per passenger (*kg CO<sub>2</sub>e)
+            quorum 'from fuels, emission factors, and passengers', :needs => [:diesel_consumed, :diesel_emission_factor, :gasoline_consumed, :gasoline_emission_factor, :alternative_fuels_consumed, :alternative_fuels_emission_factor, :distance, :air_conditioning_emission_factor, :passengers] do |characteristics|
+              (characteristics[:diesel_consumed] * characteristics[:diesel_emission_factor] + characteristics[:gasoline_consumed] * characteristics[:gasoline_emission_factor] + characteristics[:alternative_fuels_consumed] * characteristics[:alternative_fuels_emission_factor] + characteristics[:distance] * characteristics[:air_conditioning_emission_factor]) / characteristics[:passengers]
+            end
+          end
+          
+          ### Air conditioning emission factor calculation
+          # Returns the `air conditioning emission factor` (*kg CO<sub>2</sub>e / km*)
+          committee :air_conditioning_emission_factor do
+            #### Air conditioning emission factor from bus class
+            # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
+            #
+            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `air conditioning emission factor` (*kg CO<sub>2</sub>e / km*).
+            quorum 'from bus class', :needs => :bus_class do |characteristics|
+              characteristics[:bus_class].fugitive_air_conditioning_emission
+            end
+          end
+          
+          ### Diesel emission factor calculation
+          # Returns the `diesel emission factor` (*kg CO<sub>2</sub>e / l*)
+          committee :diesel_emission_factor do
+            #### Default diesel emission factor
+            # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
+            #
+            # Looks up [Distillate Fuel Oil 2](http://data.brighterplanet.com/fuel_types)'s `emission factor` (*kg CO<sub>2</sub>e / l*).
+            quorum 'default' do
+              diesel = FuelType.find_by_name "Distillate Fuel Oil 2"
+              diesel.emission_factor
+            end
+          end
+          
+          ### Gasoline emission factor calculation
+          # Returns the `gasoline emission factor` (*kg CO<sub>2</sub>e / l*)
+          committee :gasoline_emission_factor do
+            #### Default gasoline emission factor
+            # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
+            #
+            # Looks up [Conventional Motor Gasoline](http://data.brighterplanet.com/fuel_types)'s `emission factor` (*kg CO<sub>2</sub>e / l*).
+            quorum 'default' do
+              gasoline = FuelType.find_by_name "Conventional Motor Gasoline"
+              gasoline.emission_factor
+            end
+          end
+          
+          ### Alternative fuels emission factor calculation
+          # Returns the `alternative fuels emission factor` (*kg CO<sub>2</sub>e / l*)
+          committee :alternative_fuels_emission_factor do
+            #### Default alternative fuels emission factor
+            # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
+            #
+            # Uses an `alternative fuels emission factor` of 1.17 *kg CO<sub>2</sub>e / l*.
+            quorum 'default' do
+              9.742.pounds_per_gallon.to(:kilograms_per_litre)
             end
           end
           
@@ -67,13 +112,13 @@ module BrighterPlanet
             end
           end
           
-          ### Alternative fuel consumed calculation
-          # Returns the `alternative fuel consumed` (*l*).
+          ### Alternative fuels consumed calculation
+          # Returns the `alternative fuels consumed` (*l*).
           committee :alternative_fuels_consumed do
-            #### Alternative fuel consumed from distance and alternative fuel intensity
+            #### Alternative fuels consumed from distance and alternative fuels intensity
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
-            # Multiplies `distance` (*km*) by `alternative fuel intensity` (*l / km*) to give *l*.
+            # Multiplies `distance` (*km*) by `alternative fuels intensity` (*l / km*) to give *l*.
             quorum 'from distance and alternative fuels intensity', :needs => [:distance, :alternative_fuels_intensity] do |characteristics|
               characteristics[:distance] * characteristics[:alternative_fuels_intensity]
             end
@@ -135,13 +180,13 @@ module BrighterPlanet
             end
           end
           
-          ### Alternative fuel intensity calculation
-          # Returns the `alternative fuel intensity` (*l / km*).
+          ### Alternative fuels intensity calculation
+          # Returns the `alternative fuels intensity` (*l / km*).
           committee :alternative_fuels_intensity do
-            #### Alternative fuel intensity from bus class
+            #### Alternative fuels intensity from bus class
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
-            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `alternative fuel intensity` (*l / km*).
+            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `alternative fuels intensity` (*l / km*).
             quorum 'from bus class', :needs => :bus_class do |characteristics|
               characteristics[:bus_class].alternative_fuels_intensity
             end
