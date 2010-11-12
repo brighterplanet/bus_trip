@@ -39,7 +39,7 @@ module BrighterPlanet
             # - Sums the diesel, gasoline, alternative fuel, and fugitive air conditioning emissions
             # - Divides by passengers to give emissions per passenger (*kg CO<sub>2</sub>e)
             quorum 'from fuel and passengers', :needs => [:diesel_consumed, :gasoline_consumed, :alternative_fuels_consumed, :passengers, :distance, :bus_class] do |characteristics|
-              (characteristics[:diesel_consumed] * research(:diesel_emission_factor) + characteristics[:gasoline_consumed] * research(:gasoline_emission_factor) + characteristics[:alternative_fuels_consumed] * research(:alternative_fuels_emission_factor) + characteristics[:distance] * characteristics[:bus_class].fugitive_air_conditioning_emission) / characteristics[:passengers]
+              (characteristics[:diesel_consumed] * 22.450.pounds_per_gallon.to(:kilograms_per_litre) + characteristics[:gasoline_consumed] * 23.681.pounds_per_gallon.to(:kilograms_per_litre) + characteristics[:alternative_fuels_consumed] * 9.742.pounds_per_gallon.to(:kilograms_per_litre) + characteristics[:distance] * characteristics[:bus_class].fugitive_air_conditioning_emission) / characteristics[:passengers]
             end
           end
           
@@ -198,17 +198,6 @@ module BrighterPlanet
               BusClass.fallback
             end
           end
-        end
-      end
-
-      def self.research(key)
-        case key
-        when :diesel_emission_factor
-          22.450.pounds_per_gallon.to(:kilograms_per_litre) # CO2 / diesel  https://brighterplanet.sifterapp.com/projects/30/issues/454
-        when :gasoline_emission_factor
-          23.681.pounds_per_gallon.to(:kilograms_per_litre) # CO2 / gasoline  https://brighterplanet.sifterapp.com/projects/30/issues/454
-        when :alternative_fuels_emission_factor
-          9.742.pounds_per_gallon.to(:kilograms_per_litre) # CO2 / equiv alternative fuels  https://brighterplanet.sifterapp.com/projects/30/issues/454
         end
       end
     end
