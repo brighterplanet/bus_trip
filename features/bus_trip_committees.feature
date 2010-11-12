@@ -19,25 +19,19 @@ Feature: Bus Trip Committee Calculations
     When the "alternative_fuels_intensity" committee is calculated
     Then the conclusion of the committee should be "2.11693"
   
-  Scenario: Gasoline intensity from bus class
-    Given a bus trip emitter
-    And a characteristic "bus_class.name" of "city transit"
-    When the "gasoline_intensity" committee is calculated
-    Then the conclusion of the committee should be "0.0"
-  
   Scenario: Diesel intensity from bus class
     Given a bus trip emitter
     And a characteristic "bus_class.name" of "city transit"
     When the "diesel_intensity" committee is calculated
     Then the conclusion of the committee should be "0.423386"
   
-  Scenario: Distance from duration
+  Scenario: Distance from duration and speed
     Given a bus trip emitter
     And a characteristic "duration" of "60"
     And a characteristic "bus_class.name" of "city transit"
     When the "speed" committee is calculated
     And the "distance" committee is calculated
-    Then the committee should have used quorum "from duration"
+    Then the committee should have used quorum "from duration and speed"
     And the conclusion of the committee should be "24.0919"
   
   Scenario: Distance from bus class
@@ -54,13 +48,6 @@ Feature: Bus Trip Committee Calculations
     When the "alternative_fuels_consumed" committee is calculated
     Then the conclusion of the committee should be "20"
   
-  Scenario: Gasoline consumed from distance and gasoline intensity
-    Given a bus trip emitter
-    And a characteristic "gasoline_intensity" of "2"
-    And a characteristic "distance" of "10"
-    When the "gasoline_consumed" committee is calculated
-    Then the conclusion of the committee should be "20"
-  
   Scenario: Diesel consumed from distance and diesel intensity
     Given a bus trip emitter
     And a characteristic "diesel_intensity" of "2"
@@ -72,11 +59,6 @@ Feature: Bus Trip Committee Calculations
     Given a bus trip emitter
     When the "alternative_fuels_emission_factor" committee is calculated
     Then the conclusion of the committee should be "1.16735"
-  
-  Scenario: Gasoline emission factor from default
-    Given a bus trip emitter
-    When the "gasoline_emission_factor" committee is calculated
-    Then the conclusion of the committee should be "3.0"
   
   Scenario: Diesel emission factor from default
     Given a bus trip emitter

@@ -28,30 +28,30 @@ module BrighterPlanet
             #### Emission from fuel, emission factors, and passengers
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
-            # - Multiplies `diesel consumed` (*l*) by the `diesel emission factor` (*kg CO<sub>2</sub>e / l*) to give diesel emissions (*kg CO<sub>2</sub>e*)
-            # - Multiplies `gasoline consumed` (*l*) by the `gasoline emission factor` (*kg CO<sub>2</sub>e / l*) to give gasoline emissions (*kg CO<sub>2</sub>e*)
-            # - Multiplies `alternaive fuel consumed` (*l*) by the `alternative fuels emission factor` (*kg CO<sub>2</sub>e / l*) to give alternative fuels emissions (*kg CO<sub>2</sub>e*)
-            # - Multiplies `distance` (*km*) by the `air conditioning emission factor` (*kg CO<sub>2</sub>e / km*) to give air conditioning emissions (*kg CO<sub>2</sub>e*)
-            # - Sums the diesel, gasoline, alternative fuels, and air conditioning emissions and divides by passengers to give emissions per passenger (*kg CO<sub>2</sub>e)
-            quorum 'from fuels, emission factors, and passengers', :needs => [:diesel_consumed, :diesel_emission_factor, :gasoline_consumed, :gasoline_emission_factor, :alternative_fuels_consumed, :alternative_fuels_emission_factor, :distance, :air_conditioning_emission_factor, :passengers] do |characteristics|
-              (characteristics[:diesel_consumed] * characteristics[:diesel_emission_factor] + characteristics[:gasoline_consumed] * characteristics[:gasoline_emission_factor] + characteristics[:alternative_fuels_consumed] * characteristics[:alternative_fuels_emission_factor] + characteristics[:distance] * characteristics[:air_conditioning_emission_factor]) / characteristics[:passengers]
+            # - Multiplies diesel consumed (*l*) by the diesel emission factor (*kg CO<sub>2</sub>e / l*) to give diesel emissions (*kg CO<sub>2</sub>e*)
+            # - Multiplies alternaive fuel consumed (*l*) by the alternative fuels emission factor (*kg CO<sub>2</sub>e / l*) to give alternative fuels emissions (*kg CO<sub>2</sub>e*)
+            # - Multiplies distance (*km*) by the air conditioning emission factor (*kg CO<sub>2</sub>e / km*) to give air conditioning emissions (*kg CO<sub>2</sub>e*)
+            # - Sums the diesel, alternative fuels, and air conditioning emissions and divides by passengers to give emissions per passenger (*kg CO<sub>2</sub>e*)
+            quorum 'from fuels, emission factors, and passengers', :needs => [:diesel_consumed, :diesel_emission_factor, :alternative_fuels_consumed, :alternative_fuels_emission_factor, :distance, :air_conditioning_emission_factor, :passengers] do |characteristics|
+              (characteristics[:diesel_consumed] * characteristics[:diesel_emission_factor] + characteristics[:alternative_fuels_consumed] * characteristics[:alternative_fuels_emission_factor] + characteristics[:distance] * characteristics[:air_conditioning_emission_factor]) / characteristics[:passengers]
             end
           end
           
           ### Air conditioning emission factor calculation
-          # Returns the `air conditioning emission factor` (*kg CO<sub>2</sub>e / km*)
+          # Returns the `air conditioning emission factor` (*kg CO<sub>2</sub>e / km*).
+          # This is used to account for fugitive emissions of air conditioning refrigerants.
           committee :air_conditioning_emission_factor do
             #### Air conditioning emission factor from bus class
             # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
             #
             # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `air conditioning emission factor` (*kg CO<sub>2</sub>e / km*).
             quorum 'from bus class', :needs => :bus_class do |characteristics|
-              characteristics[:bus_class].fugitive_air_conditioning_emission
+              characteristics[:bus_class].air_conditioning_emission_factor
             end
           end
           
           ### Diesel emission factor calculation
-          # Returns the `diesel emission factor` (*kg CO<sub>2</sub>e / l*)
+          # Returns the `diesel emission factor` (*kg CO<sub>2</sub>e / l*).
           committee :diesel_emission_factor do
             #### Default diesel emission factor
             # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
@@ -63,21 +63,8 @@ module BrighterPlanet
             end
           end
           
-          ### Gasoline emission factor calculation
-          # Returns the `gasoline emission factor` (*kg CO<sub>2</sub>e / l*)
-          committee :gasoline_emission_factor do
-            #### Default gasoline emission factor
-            # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
-            #
-            # Looks up [Conventional Motor Gasoline](http://data.brighterplanet.com/fuel_types)'s `emission factor` (*kg CO<sub>2</sub>e / l*).
-            quorum 'default' do
-              gasoline = FuelType.find_by_name "Conventional Motor Gasoline"
-              gasoline.emission_factor
-            end
-          end
-          
           ### Alternative fuels emission factor calculation
-          # Returns the `alternative fuels emission factor` (*kg CO<sub>2</sub>e / l*)
+          # Returns the `alternative fuels emission factor` (*kg CO<sub>2</sub>e / l*).
           committee :alternative_fuels_emission_factor do
             #### Default alternative fuels emission factor
             # **Complies:** GHG Protocol, ISO 14046-1, Climate Registry Protocol
@@ -97,18 +84,6 @@ module BrighterPlanet
             # Multiplies `distance` (*km*) by `diesel intensity` (*l / km*) to give *l*.
             quorum 'from distance and diesel intensity', :needs => [:distance, :diesel_intensity] do |characteristics|
               characteristics[:distance] * characteristics[:diesel_intensity]
-            end
-          end
-          
-          ### Gasoline consumed calculation
-          # Returns the `gasoline consumed` (*l*).
-          committee :gasoline_consumed do
-            #### Gasoline consumed from distance and gasoline intensity
-            # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
-            #
-            # Multiplies `distance` (*km*) by `gasoline intensity` (*l / km*) to give *l*.
-            quorum 'from distance and gasoline intensity', :needs => [:distance, :gasoline_intensity] do |characteristics|
-              characteristics[:distance] * characteristics[:gasoline_intensity]
             end
           end
           
@@ -132,16 +107,16 @@ module BrighterPlanet
             #
             # Uses the client-input `distance` (*km*).
             
-            #### Distance from duration
+            #### Distance from duration and speed
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
             # Divides `duration` (*minutes*) by 60 and multiplies by `speed` (*km / hour*) to give *km*.
-            quorum 'from duration', :needs => [:duration, :speed] do |characteristics|
+            quorum 'from duration and speed', :needs => [:duration, :speed] do |characteristics|
               characteristics[:duration] / 60 * characteristics[:speed]
             end
             
             #### Distance from bus class
-            # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
+            # **Complies:**
             #
             # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `distance` (*km*).
             quorum 'from bus class', :needs => :bus_class do |characteristics|
@@ -149,8 +124,20 @@ module BrighterPlanet
             end
           end
           
+          ### Speed calculation
+          # Returns the average `speed` (*km / hour*).
+          committee :speed do
+            #### Speed from bus class
+            # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
+            #
+            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes)' average `speed` (*km / hour*).
+            quorum 'from bus class', :needs => :bus_class do |characteristics|
+              characteristics[:bus_class].speed
+            end
+          end
+          
           ### Duration calculation
-          # Returns the bus trip's `duration` (*minutes*).
+          # Returns the trip's `duration` (*minutes*).
             #### Duration from client input
             # **Complies:** All
             #
@@ -168,18 +155,6 @@ module BrighterPlanet
             end
           end
           
-          ### Gasoline intensity calculation
-          # Returns the `gasoline intensity` (*l / km*).
-          committee :gasoline_intensity do
-            #### Gasoline intensity from bus class
-            # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
-            #
-            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `gasoline intensity` (*l / km*).
-            quorum 'from bus class', :needs => :bus_class do |characteristics|
-              characteristics[:bus_class].gasoline_intensity
-            end
-          end
-          
           ### Alternative fuels intensity calculation
           # Returns the `alternative fuels intensity` (*l / km*).
           committee :alternative_fuels_intensity do
@@ -192,25 +167,13 @@ module BrighterPlanet
             end
           end
           
-          ### Speed calculation
-          # Returns the average `speed` (*km / hour*).
-          committee :speed do
-            # Speed from bus class
-            # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
-            #
-            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `speed` (*km / hour*).
-            quorum 'from bus class', :needs => :bus_class do |characteristics|
-              characteristics[:bus_class].speed
-            end
-          end
-          
           ### Passengers calculation
-          # Returns the total number of `passengers`.
+          # Returns the number of `passengers` on the bus.
           committee :passengers do
             #### Passengers from bus class
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
-            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `passengers`.
+            # Looks up the [bus class](http://data.brighterplanet.com/bus_classes)' average number of `passengers`.
             quorum 'from bus class', :needs => :bus_class do |characteristics|
               characteristics[:bus_class].passengers
             end
@@ -228,7 +191,7 @@ module BrighterPlanet
             #### Default bus class
             # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
-            # Uses U.S. averages.
+            # Uses an artificial [bus class](http://data.brighterplanet.com/bus_classes) that represents the U.S. average.
             quorum 'default' do
               BusClass.fallback
             end
