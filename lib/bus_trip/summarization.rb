@@ -3,7 +3,7 @@ module BrighterPlanet
     module Summarization
       def self.included(base)
         base.summarize do |has|
-          has.adjective lambda { |bus_trip| "#{bus_trip.distance_estimate_in_miles.adaptive_round(1)}-mile" }, :if => :distance_estimate
+          has.adjective lambda { |bus_trip| "#{bus_trip.distance_estimate.convert(:kilometres, :miles).round(1)}-mile" }, :if => :distance_estimate
           has.adjective lambda { |bus_trip| "#{bus_trip.duration}-minute" }, :if => :duration
           has.identity 'bus trip'
           has.verb :take
