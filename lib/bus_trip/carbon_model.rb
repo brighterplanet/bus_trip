@@ -20,7 +20,6 @@ module BrighterPlanet
   module BusTrip
     module CarbonModel
       def self.included(base)
-        base.extend FastTimestamp
         base.decide :emission, :with => :characteristics do
           ### Emission calculation
           # Returns the `emission` estimate (*kg CO<sub>2</sub>e*)
