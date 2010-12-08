@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     bus_trip (0.0.15)
+      earth (= 0.3.6)
       emitter (~> 0.3)
 
 GEM
@@ -183,6 +184,7 @@ DEPENDENCIES
   bundler (~> 1.0)
   bus_trip!
   cucumber (~> 0.8.3)
+  earth (= 0.3.6)
   emitter (~> 0.3)
   jeweler (= 1.4.0)
   rake
