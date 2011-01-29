@@ -115,11 +115,13 @@ module BrighterPlanet
             end
             
             #### Distance from bus class
-            # **Complies:**
+            # **Complies:** GHG Protocol, ISO 14064-1, Climate Registry Protocol
             #
             # Looks up the [bus class](http://data.brighterplanet.com/bus_classes) `distance` (*km*).
-            quorum 'from bus class', :needs => :bus_class do |characteristics|
-              characteristics[:bus_class].distance
+            quorum 'from bus class',
+              :needs => :bus_class,
+              :complies => [:ghg_protocol, :iso, :tcr] do |characteristics|
+                characteristics[:bus_class].distance
             end
           end
           
