@@ -38,14 +38,14 @@ require_or_fail('jeweler', 'Jeweler (or a dependency) not available. Install it 
       Dir.glob(File.join('lib', 'test_support', '**/*.rb'))
     gem.add_development_dependency 'activerecord', '~>3'
     gem.add_development_dependency 'bundler', '~> 1.0'
-    gem.add_development_dependency 'cucumber', '~>0.8.3'
-    gem.add_development_dependency 'jeweler', '=1.4.0'
+    gem.add_development_dependency 'cucumber'
+    gem.add_development_dependency 'jeweler', '~>1.4.0'
     gem.add_development_dependency 'rake'
     gem.add_development_dependency 'rdoc'
     gem.add_development_dependency 'rspec', '~>2'
-    gem.add_development_dependency 'sniff' unless ENV['LOCAL_SNIFF']
-    gem.add_dependency 'emitter', '~>0.3' unless ENV['LOCAL_EMITTER']
-    gem.add_dependency 'earth', '~>0.3.6' unless ENV['LOCAL_EARTH']
+    gem.add_development_dependency 'sniff', '~>0.6' unless ENV['LOCAL_SNIFF']
+    gem.add_dependency 'emitter', '~>0.4' unless ENV['LOCAL_EMITTER']
+    gem.add_dependency 'earth', '~>0.4.1' unless ENV['LOCAL_EARTH']
   end
   Jeweler::GemcutterTasks.new
 end
@@ -58,7 +58,7 @@ end
 require_or_fail('sniff', 'Sniff gem not found, sniff tasks unavailable') do
   require 'sniff/rake_task'
   Sniff::RakeTask.new(:console) do |t|
-    t.earth_domains = [:bus, :fuel]
+    t.earth_domains = [:bus]
   end
 end
 

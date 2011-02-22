@@ -3,6 +3,7 @@ module BrighterPlanet
     module Characterization
       def self.included(base)
         base.characterize do
+          has :date
           has :bus_class
           has :duration
           has :distance, :measures => :length
