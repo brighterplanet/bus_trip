@@ -27,12 +27,12 @@ module BrighterPlanet
           ### Emission calculation
           # Returns the `emission` estimate (*kg CO<sub>2</sub>e*)
           committee :emission do
-            #### Emission from co2 emission, ch4 emission, n2o emission, and hfc emission
+            #### Emission from CO<sub>2</sub> emission, CH<sub>4</sub> emission, N<sub>2</sub>O emission, and HFC emission
             quorum 'from co2 emission, ch4 emission, n2o emission, and hfc emission',
               :needs => [:co2_emission, :ch4_emission, :n2o_emission, :hfc_emission],
               # **Complies:** GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics|
-              # - Sums the non-biogenic emissions
+              # - Sums the non-biogenic emissions to give *kg CO<sub>2</sub>e*.
               characteristics[:co2_emission] + characteristics[:ch4_emission] + characteristics[:n2o_emission] + characteristics[:hfc_emission]
             end
           end
@@ -45,12 +45,12 @@ module BrighterPlanet
               :needs => [:distance, :bus_class, :date, :passengers],
               # **Complies:** GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics, timeframe|
-                # - Checks whether the trip `date` falls within the `timeframe`
+                # Checks whether the trip `date` falls within the `timeframe`.
                 date = characteristics[:date].is_a?(Date) ?
                   characteristics[:date] :
                   Date.parse(characteristics[:date].to_s)
                 if timeframe.include? date
-                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s co2 emission factor (*kg / l*) and sums to give a combined co2 emission factor (*kg / km*)
+                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s `co2 emission factor` (*kg / l*) and sums to give a combined `co2 emission factor` (*kg / km*).
                   combined_ef = characteristics[:bus_class].gasoline_intensity * BusFuel.find_by_name("Gasoline").co2_emission_factor +
                                 characteristics[:bus_class].diesel_intensity * BusFuel.find_by_name("Diesel").co2_emission_factor +
                                 characteristics[:bus_class].cng_intensity * BusFuel.find_by_name("CNG").co2_emission_factor +
@@ -58,10 +58,10 @@ module BrighterPlanet
                                 characteristics[:bus_class].lpg_intensity * BusFuel.find_by_name("LPG").co2_emission_factor +
                                 characteristics[:bus_class].methanol_intensity * BusFuel.find_by_name("Methanol").co2_emission_factor +
                                 characteristics[:bus_class].biodiesel_intensity * BusFuel.find_by_name("Biodiesel").co2_emission_factor
-                  # Multiplies distance (*km*) by the combined co2 emission factor (*kg / km*) and divides by `passengers` to give *kg*
+                  # Multiplies distance (*km*) by the combined `co2 emission factor` (*kg / km*) and divides by `passengers` to give *kg*.
                   characteristics[:distance] * combined_ef / characteristics[:passengers]
                 else
-                  # - If the `date` does not fall within the `timeframe`, `co2 emission` is zero
+                  # If the `date` does not fall within the `timeframe`, `co2 emission` is zero.
                   0
                 end
             end
@@ -75,12 +75,12 @@ module BrighterPlanet
               :needs => [:distance, :bus_class, :date, :passengers],
               # **Complies:** GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics, timeframe|
-                # - Checks whether the trip `date` falls within the `timeframe`
+                # Checks whether the trip `date` falls within the `timeframe`.
                 date = characteristics[:date].is_a?(Date) ?
                   characteristics[:date] :
                   Date.parse(characteristics[:date].to_s)
                 if timeframe.include? date
-                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s co2 biogenic emission factor (*kg / l*) and sums to give a combined co2 biogenic emission factor (*kg / km*)
+                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s `co2 biogenic emission factor` (*kg / l*) and sums to give a combined `co2 biogenic emission factor` (*kg / km*).
                   combined_ef = characteristics[:bus_class].gasoline_intensity * BusFuel.find_by_name("Gasoline").co2_biogenic_emission_factor +
                                 characteristics[:bus_class].diesel_intensity * BusFuel.find_by_name("Diesel").co2_biogenic_emission_factor +
                                 characteristics[:bus_class].cng_intensity * BusFuel.find_by_name("CNG").co2_biogenic_emission_factor +
@@ -88,10 +88,10 @@ module BrighterPlanet
                                 characteristics[:bus_class].lpg_intensity * BusFuel.find_by_name("LPG").co2_biogenic_emission_factor +
                                 characteristics[:bus_class].methanol_intensity * BusFuel.find_by_name("Methanol").co2_biogenic_emission_factor +
                                 characteristics[:bus_class].biodiesel_intensity * BusFuel.find_by_name("Biodiesel").co2_biogenic_emission_factor
-                  # Multiplies distance (*km*) by the combined co2 biogenic emission factor (*kg / km*) and divides by `passengers` to give *kg*
+                  # Multiplies distance (*km*) by the combined `co2 biogenic emission factor` (*kg / km*) and divides by `passengers` to give *kg*.
                   characteristics[:distance] * combined_ef / characteristics[:passengers]
                 else
-                  # - If the `date` does not fall within the `timeframe`, `co2 biogenic emission` is zero
+                  # If the `date` does not fall within the `timeframe`, `co2 biogenic emission` is zero.
                   0
                 end
             end
@@ -105,12 +105,12 @@ module BrighterPlanet
               :needs => [:distance, :bus_class, :passengers, :date],
               # **Complies:** GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics, timeframe|
-                # - Checks whether the trip `date` falls within the `timeframe`
+                # Checks whether the trip `date` falls within the `timeframe`.
                 date = characteristics[:date].is_a?(Date) ?
                   characteristics[:date] :
                   Date.parse(characteristics[:date].to_s)
                 if timeframe.include? date
-                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s ch4 emission factor (*kg co2e / km*) and sums to give a combined ch4 emission factor (*kg co2e l / km^2*).
+                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s `ch4 emission factor` (*kg CO<sub>2</sub>e / km*) and sums to give a combined `ch4 emission factor` (*kg CO<sub>2</sub>e l / km<sup>2</sup>*).
                   combined_ef = characteristics[:bus_class].gasoline_intensity * BusFuel.find_by_name("Gasoline").ch4_emission_factor +
                                 characteristics[:bus_class].diesel_intensity * BusFuel.find_by_name("Diesel").ch4_emission_factor +
                                 characteristics[:bus_class].cng_intensity * BusFuel.find_by_name("CNG").ch4_emission_factor +
@@ -118,7 +118,7 @@ module BrighterPlanet
                                 characteristics[:bus_class].lpg_intensity * BusFuel.find_by_name("LPG").ch4_emission_factor +
                                 characteristics[:bus_class].methanol_intensity * BusFuel.find_by_name("Methanol").ch4_emission_factor +
                                 characteristics[:bus_class].biodiesel_intensity * BusFuel.find_by_name("Biodiesel").ch4_emission_factor
-                  # Adds the individual fuel intensities for the [bus class](http://data.brighterplanet.com/bus_classes) to give total fuel intensity (*l / km*).
+                  # Adds the individual fuel intensities for the [bus class](http://data.brighterplanet.com/bus_classes) to give `total fuel intensity` (*l / km*).
                   total_intensity = characteristics[:bus_class].gasoline_intensity +
                                     characteristics[:bus_class].diesel_intensity +
                                     characteristics[:bus_class].cng_intensity +
@@ -126,30 +126,30 @@ module BrighterPlanet
                                     characteristics[:bus_class].lpg_intensity +
                                     characteristics[:bus_class].methanol_intensity +
                                     characteristics[:bus_class].biodiesel_intensity
-                  # Divides the combined `ch4 emission factor` (*kg co2e l / km^2*) by the total intensity (*l / km*), multiplies by distance (*km*), and divides by passengers to give *kg co2e*.
-                  # (Multiplying each fuel's emission factor by its fuel intensity and dividing by total fuel intensity distributes the total travel between the various fuels. We need to do this because the `ch4 emission factor` units are emission per unit distance rather than per unit fuel.)
+                  # Divides the combined `ch4 emission factor` (*kg CO<sub>2</sub>e l / km<sup>2</sup>*) by the total intensity (*l / km*), multiplies by distance (*km*), and divides by `passengers` to give *kg CO<sub>2</sub>e*.
+                  # (This distributes the total travel between the various fuels; we need to do this because the `ch4 emission factor` is emission per unit distance rather than per unit fuel.)
                   (characteristics[:distance] * (combined_ef / total_intensity)) / characteristics[:passengers]
                 else
-                  # - If the `date` does not fall within the `timeframe`, `ch4 emission` is zero
+                  # If the `date` does not fall within the `timeframe`, `ch4 emission` is zero.
                   0
                 end
             end
           end
           
           ### N<sub>2</sub>O emission calculation
-          # Returns the `n2o emission` (*kg co2e / l*).
+          # Returns the `n2o emission` (*kg CO<sub>2</sub>e / l*).
           committee :n2o_emission do
             #### N<sub>2</sub>O emission from distance, bus class, passengers, date, and timeframe
             quorum 'from distance, bus class, passengers, date, and timeframe',
               :needs => [:distance, :bus_class, :passengers, :date],
               # **Complies:** GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics, timeframe|
-                # - Checks whether the trip `date` falls within the `timeframe`
+                # Checks whether the trip `date` falls within the `timeframe`.
                 date = characteristics[:date].is_a?(Date) ?
                   characteristics[:date] :
                   Date.parse(characteristics[:date].to_s)
                 if timeframe.include? date
-                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s n2o emission factor (*kg co2e / km*) and sums to give a combined n2o emission factor (*kg co2e l / km^2*).
+                  # Multiplies each fuel intensity (*l / km*) for the [bus class](http://data.brighterplanet.com/bus_classes) by that [fuel](http://data.brighterplanet.com/bus_fuels)'s `n2o emission factor` (*kg CO<sub>2</sub>e / km*) and sums to give a combined `n2o emission factor` (*kg CO<sub>2</sub>e l / km<sup>2</sup>*).
                   combined_ef = characteristics[:bus_class].gasoline_intensity * BusFuel.find_by_name("Gasoline").n2o_emission_factor +
                                 characteristics[:bus_class].diesel_intensity * BusFuel.find_by_name("Diesel").n2o_emission_factor +
                                 characteristics[:bus_class].cng_intensity * BusFuel.find_by_name("CNG").n2o_emission_factor +
@@ -157,7 +157,7 @@ module BrighterPlanet
                                 characteristics[:bus_class].lpg_intensity * BusFuel.find_by_name("LPG").n2o_emission_factor +
                                 characteristics[:bus_class].methanol_intensity * BusFuel.find_by_name("Methanol").n2o_emission_factor +
                                 characteristics[:bus_class].biodiesel_intensity * BusFuel.find_by_name("Biodiesel").n2o_emission_factor
-                  # Adds the individual fuel intensities for the [bus class](http://data.brighterplanet.com/bus_classes) to give total fuel intensity (*l / km*).
+                  # Adds the individual fuel intensities for the [bus class](http://data.brighterplanet.com/bus_classes) to give `total fuel intensity` (*l / km*).
                   total_intensity = characteristics[:bus_class].gasoline_intensity +
                                     characteristics[:bus_class].diesel_intensity +
                                     characteristics[:bus_class].cng_intensity +
@@ -165,33 +165,33 @@ module BrighterPlanet
                                     characteristics[:bus_class].lpg_intensity +
                                     characteristics[:bus_class].methanol_intensity +
                                     characteristics[:bus_class].biodiesel_intensity
-                  # Divides the combined n2o emission factor (*kg co2e l / km^2*) by the total intensity (*l / km*), multiplies by distance (*km*), and divides by passengers to give *kg co2e*.
-                  # (Multiplying each fuel's emission factor by its fuel intensity and dividing by total fuel intensity distributes the total travel between the various fuels. We need to do this because the `n2o emission factor` units are emission per unit distance rather than per unit fuel.)
+                  # Divides the combined `n2o emission factor` (*kg CO<sub>2</sub>e l / km<sup>2</sup>*) by the total intensity (*l / km*), multiplies by distance (*km*), and divides by `passengers` to give *kg CO<sub>2</sub>e*.
+                  # (This distributes the total travel between the various fuels; we need to do this because the `n2o emission factor` is emission per unit distance rather than per unit fuel.)
                   combined_ef / total_intensity * characteristics[:distance] / characteristics[:passengers]
                 else
-                  # - If the `date` does not fall within the `timeframe`, `n2o emission` is zero
+                  # If the `date` does not fall within the `timeframe`, `n2o emission` is zero.
                   0
                 end
             end
           end
           
           ### HFC emission calculation
-          # Returns the `hfc emission` (*kg co2e*).
+          # Returns the `hfc emission` (*kg CO<sub>2</sub>*).
           committee :hfc_emission do
             #### HFC emission from distance, bus class, passengers, date, and timeframe
             quorum 'from distance, bus class, passengers, date, and timeframe',
               :needs => [:distance, :bus_class, :passengers, :date],
               # **Complies:** GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics, timeframe|
-                # - Checks whether the trip `date` falls within the `timeframe`
+                # Checks whether the trip `date` falls within the `timeframe`.
                 date = characteristics[:date].is_a?(Date) ?
                   characteristics[:date] :
                   Date.parse(characteristics[:date].to_s)
                 if timeframe.include? date
-                  # Looks up `hfc emission factor` (*kg co2e / km*) for the [bus class](http://data.brighterplanet.com/bus_classes), multiplies by the `distance` (*km*), and divides by `passengers` to give *kg co2e*.
+                  # Looks up `HFC emission factor` (*kg CO<sub>2</sub>e / km*) for the [bus class](http://data.brighterplanet.com/bus_classes), multiplies by the `distance` (*km*), and divides by `passengers` to give *kg CO<sub>2</sub>e*.
                   characteristics[:distance] * characteristics[:bus_class].air_conditioning_emission_factor / characteristics[:passengers]
                 else
-                  # - If the `date` does not fall within the `timeframe`, `n2o emission` is zero
+                  # If the `date` does not fall within the `timeframe`, `HFC emission` is zero.
                   0
                 end
             end
@@ -208,7 +208,7 @@ module BrighterPlanet
             #### Distance from duration and speed
             # **Complies:** GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol
             quorum 'from duration and speed', :needs => [:duration, :speed], :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics|
-              # Divides `duration` (*minutes*) by 60 and multiplies by `speed` (*km / hour*) to give *km*.
+              # Divides `duration` (*minutes*) by 60 (*minutes / hour*) and multiplies by `speed` (*km / hour*) to give *km*.
               characteristics[:duration] / 60.0 * characteristics[:speed]
             end
             
@@ -261,7 +261,7 @@ module BrighterPlanet
             #### Default bus class
             # **Complies:** GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol
             quorum 'default', :complies => [:ghg_protocol_scope_3, :iso, :tcr] do
-              # Uses an artificial [bus class](http://data.brighterplanet.com/bus_classes) that represents the U.S. average.
+              # Uses a fallback [bus class](http://data.brighterplanet.com/bus_classes) that represents the U.S. average.
               BusClass.fallback
             end
           end
