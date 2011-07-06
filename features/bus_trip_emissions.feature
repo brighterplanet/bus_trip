@@ -22,7 +22,7 @@ Feature: Bus Trip Emissions Calculations
     Then the emission value should be within "0.01" kgs of "14.37"
   
   Scenario: Calculations for bus trip from duration
-    Given a bus trip has "duration" of "30"
+    Given a bus trip has "duration" of "1800"
     When emissions are calculated
     Then the emission value should be within "0.01" kgs of "2.29"
   

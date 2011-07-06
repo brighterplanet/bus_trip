@@ -5,8 +5,8 @@ module BrighterPlanet
         base.characterize do
           has :date
           has :bus_class
-          has :duration
-          has :distance, :measures => :length
+          has :duration, :measures => :time
+          has :distance, :measures => Measurement::BigLength
         end
       end
     end

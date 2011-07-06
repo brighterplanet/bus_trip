@@ -208,8 +208,8 @@ module BrighterPlanet
             #### Distance from duration and speed
             # **Complies:** GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol
             quorum 'from duration and speed', :needs => [:duration, :speed], :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics|
-              # Divides `duration` (*minutes*) by 60 (*minutes / hour*) and multiplies by `speed` (*km / hour*) to give *km*.
-              characteristics[:duration] / 60.0 * characteristics[:speed]
+              # Divides `duration` (*seconds*) by 3600 and multiplies by `speed` (*km / hour*) to give *km*.
+              characteristics[:duration] / 3600.0 * characteristics[:speed]
             end
             
             #### Distance from bus class
@@ -232,11 +232,11 @@ module BrighterPlanet
           end
           
           ### Duration calculation
-          # Returns the trip's `duration` (*minutes*).
+          # Returns the trip's `duration` (*seconds*).
             #### Duration from client input
             # **Complies:** All
             #
-            # Uses the client-input `duration` (*minutes*).
+            # Uses the client-input `duration` (*seconds*).
           
           ### Passengers calculation
           # Returns the number of `passengers` on the bus.

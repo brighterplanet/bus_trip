@@ -48,7 +48,7 @@ Feature: Bus Trip Committee Calculations
   
   Scenario: Distance from duration and speed
     Given a bus trip emitter
-    And a characteristic "duration" of "30"
+    And a characteristic "duration" of "1800"
     When the "bus_class" committee is calculated
     And the "speed" committee is calculated
     And the "distance" committee is calculated
