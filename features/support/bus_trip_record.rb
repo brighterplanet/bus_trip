@@ -1,6 +1,6 @@
 require 'bus_trip'
 
 class BusTripRecord < ActiveRecord::Base
-  include Sniff::Emitter
+  include BrighterPlanet::Emitter
   include BrighterPlanet::BusTrip
 end
