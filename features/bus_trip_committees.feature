@@ -11,7 +11,8 @@ Feature: Bus Trip Committee Calculations
     And the conclusion of the committee should be "2009-06-06"
 
   Scenario: Passengers from default bus class
-    Given the "passengers" committee reports
+    When the "bus_class" committee reports
+    And the "passengers" committee reports
     Then the conclusion of the committee should be "7.485"
   
   Scenario: Passengers from bus class
@@ -20,7 +21,8 @@ Feature: Bus Trip Committee Calculations
     Then the conclusion of the committee should be "9.0"
   
   Scenario: Speed from default bus class
-    Given the "speed" committee reports
+    When the "bus_class" committee reports
+    And the "speed" committee reports
     Then the conclusion of the committee should be "31.94387"
   
   Scenario: Speed from bus class
@@ -29,7 +31,8 @@ Feature: Bus Trip Committee Calculations
     Then the conclusion of the committee should be "21.0"
   
   Scenario: Distance from default bus class
-    Given the "distance" committee reports
+    When the "bus_class" committee reports
+    And the "distance" committee reports
     Then the committee should have used quorum "from bus class"
     And the conclusion of the committee should be "8.00262"
   
