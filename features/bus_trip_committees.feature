@@ -2,7 +2,7 @@ Feature: Bus Trip Committee Calculations
   The bus trip model should generate correct committee calculations
 
   Background:
-    Given a BusTrip
+    Given a bus_trip
 
   Scenario: Date committee from timeframe
     Given a characteristic "timeframe" of "2009-06-06/2010-01-01"

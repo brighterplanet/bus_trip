@@ -2,7 +2,7 @@ Feature: Bus Trip Emissions Calculations
   The bus trip model should generate correct emission calculations
   
   Background:
-    Given a BusTrip
+    Given a bus_trip
 
   Scenario: Calculations for bus trip with nothing
     Given a bus trip has nothing
