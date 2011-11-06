@@ -59,34 +59,85 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-Bus_trip_carbon_model'>
+    <tr id='section-Bus_trip_impact_model'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-Bus_trip_carbon_model">&#182;</a>
+          <a class="pilcrow" href="#section-Bus_trip_impact_model">&#182;</a>
         </div>
-        <h1>Bus trip carbon model</h1>
+        <h2>Bus trip impact model</h2>
 
-<p>This model is used by <a href="http://brighterplanet.com">Brighter Planet</a>&rsquo;s carbon emission <a href="http://carbon.brighterplanet.com">web service</a> to estimate the <strong>greenhouse gas emissions of passenger bus travel</strong>.</p>
+<p>This model is used by the <a href="http://brighterplanet.com">Brighter Planet</a> <a href="http://impact.brighterplanet.com">CM1 web service</a> to calculate the per-passenger impacts of a bus trip, such as energy use and greenhouse gas emissions.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Timeframe'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Timeframe">&#182;</a>
+        </div>
+        <h4>Timeframe</h4>
 
-<h4>Timeframe and activity period</h4>
+<p>The model calculates impacts that occured during a particular time period (<code>timeframe</code>).
+For example if the <code>timeframe</code> is February 2010, a trip that occurred (<code>date</code>) on February 15, 2010 will have impacts, but a trip that occurred on January 31, 2010 will have zero impacts.</p>
 
-<p>The model estimates the emissions that occur during a particular <code>timeframe</code>. To do this it needs to know the <code>date</code> on which the trip occurred. For example, if the <code>timeframe</code> is January 2010, a trip that occurred on January 5, 2010 will have emissions but a trip that occurred on February 1, 2010 will not.</p>
+<p>The default <code>timeframe</code> is the current calendar year.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Calculations'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Calculations">&#182;</a>
+        </div>
+        <h4>Calculations</h4>
 
-<h4>Calculations</h4>
+<p>The final impacts are the result of the calculations below. These are performed in reverse order, starting with the last calculation listed and finishing with the greenhouse gas emissions calculation.</p>
 
-<p>The final estimate is the result of the <strong>calculations</strong> detailed below. These calculations are performed in reverse order, starting with the last calculation listed and finishing with the <code>emission</code> calculation. Each calculation is named according to the value it returns.</p>
+<p>Each calculation listing shows:</p>
 
-<h4>Methods</h4>
+<ul>
+<li>value returned (<em>units of measurement</em>)</li>
+<li>description of the value</li>
+<li>calculation methods, listed from most to least preferred</li>
+</ul>
 
-<p>To accomodate varying client input, each calculation may have one or more <strong>methods</strong>. These are listed under each calculation in order from most to least preferred. Each method is named according to the values it requires. If any of these values is not available the method will be ignored. If all the methods for a calculation are ignored, the calculation will not return a value. &ldquo;Default&rdquo; methods do not require any values, and so a calculation with a default method will always return a value.</p>
 
-<h4>Standard compliance</h4>
+<p>Some methods use <code>values</code> returned by prior calculations. If any of these <code>values</code> are unknown the method is skipped.
+If all the methods for a calculation are skipped, the value the calculation would return is unknown.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Standard_compliance'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Standard_compliance">&#182;</a>
+        </div>
+        <h4>Standard compliance</h4>
 
-<p>Each method lists any established calculation standards with which it <strong>complies</strong>. When compliance with a standard is requested, all methods that do not comply with that standard are ignored. This means that any values a particular method requires will have been calculated using a compliant method, because those are the only methods available. If any value did not have a compliant method in its calculation then it would be undefined, and the current method would have been ignored.</p>
+<p>When compliance with a particular standard is requested, all methods that do not comply with that standard are ignored.
+Thus any <code>values</code> a method needs will have been calculated using a compliant method or will be unknown.
+To see which standards a method complies with, look at the <code>:complies =&gt;</code> section of the code in the right column.</p>
 
-<h4>Collaboration</h4>
+<p>Client input complies with all standards.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Collaboration'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Collaboration">&#182;</a>
+        </div>
+        <h4>Collaboration</h4>
 
-<p>Contributions to this carbon model are actively encouraged and warmly welcomed. This library includes a comprehensive test suite to ensure that your changes do not cause regressions. All changes should include test coverage for new functionality. Please see <a href="https://github.com/brighterplanet/sniff#readme">sniff</a>, our emitter testing framework, for more information.</p>
+<p>Contributions to this impact model are actively encouraged and warmly welcomed. This library includes a comprehensive test suite to ensure that your changes do not cause regressions. All changes should include test coverage for new functionality. Please see <a href="https://github.com/brighterplanet/sniff#readme">sniff</a>, our emitter testing framework, for more information.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">module</span> <span class="nn">BrighterPlanet</span>
@@ -96,81 +147,28 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <span class="n">base</span><span class="o">.</span><span class="n">decide</span> <span class="ss">:impact</span><span class="p">,</span> <span class="ss">:with</span> <span class="o">=&gt;</span> <span class="ss">:characteristics</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
-    <tr id='section-Emission_calculation'>
+    <tr id='section-7'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-Emission_calculation">&#182;</a>
+          <a class="pilcrow" href="#section-7">&#182;</a>
         </div>
-        <h2>Emission calculation</h2>
+        <hr />
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>          </pre></div>
+      </td>
+    </tr>
+    <tr id='section-Carbon_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Carbon_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)">&#182;</a>
+        </div>
+        <h3>Carbon (<em>kg CO<sub>2</sub>e</em>)</h3>
 
-<p>Returns the <code>emission</code> estimate (<em>kg CO<sub>2</sub>e</em>)</p>
+<p>One passenger&rsquo;s share of the trip&rsquo;s anthropogenic greenhouse gas emissions during <code>timeframe</code>.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:carbon</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-Emission_from_CO&lt;sub&gt;2&lt;/sub&gt;_emission,_CH&lt;sub&gt;4&lt;/sub&gt;_emission,_N&lt;sub&gt;2&lt;/sub&gt;O_emission,_and_HFC_emission'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Emission_from_CO&lt;sub&gt;2&lt;/sub&gt;_emission,_CH&lt;sub&gt;4&lt;/sub&gt;_emission,_N&lt;sub&gt;2&lt;/sub&gt;O_emission,_and_HFC_emission">&#182;</a>
-        </div>
-        <h3>Emission from CO<sub>2</sub> emission, CH<sub>4</sub> emission, N<sub>2</sub>O emission, and HFC emission</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from co2 emission, ch4 emission, n2o emission, and hfc emission&#39;</span><span class="p">,</span>
-              <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:co2_emission</span><span class="p">,</span> <span class="ss">:ch4_emission</span><span class="p">,</span> <span class="ss">:n2o_emission</span><span class="p">,</span> <span class="ss">:hfc_emission</span><span class="o">]</span><span class="p">,</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-5'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-5">&#182;</a>
-        </div>
-        <p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6">&#182;</a>
-        </div>
-        <ul>
-<li>Sums the non-biogenic emissions to give <em>kg CO<sub>2</sub>e</em>.</li>
-</ul>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:co2_emission</span><span class="o">]</span> <span class="o">+</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:ch4_emission</span><span class="o">]</span> <span class="o">+</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:n2o_emission</span><span class="o">]</span> <span class="o">+</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:hfc_emission</span><span class="o">]</span>
-            <span class="k">end</span>
-          <span class="k">end</span>
-          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-CO&lt;sub&gt;2&lt;/sub&gt;_emission_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-CO&lt;sub&gt;2&lt;/sub&gt;_emission_calculation">&#182;</a>
-        </div>
-        <h2>CO<sub>2</sub> emission calculation</h2>
-
-<p>Returns the <code>co2 emission</code> per passenger (<em>kg / l</em>).</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:co2_emission</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-CO&lt;sub&gt;2&lt;/sub&gt;_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-CO&lt;sub&gt;2&lt;/sub&gt;_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe">&#182;</a>
-        </div>
-        <h3>CO<sub>2</sub> emission from distance, bus class, passengers, date, and timeframe</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance, bus class, passengers, date, and timeframe&#39;</span><span class="p">,</span>
-              <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance</span><span class="p">,</span> <span class="ss">:bus_class</span><span class="p">,</span> <span class="ss">:date</span><span class="p">,</span> <span class="ss">:passengers</span><span class="o">]</span><span class="p">,</span></pre></div>
       </td>
     </tr>
     <tr id='section-9'>
@@ -178,24 +176,28 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-9">&#182;</a>
         </div>
-        <p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol</p>
+        <p>Sum <code>co2 emission</code> (<em>kg</em>), <code>ch4 emission</code> (<em>kg CO<sub>2</sub>e</em>), <code>n2o emission</code> (<em>kg CO<sub>2</sub>e</em>), and <code>hfc emission</code> (<em>kg CO<sub>2</sub>e</em>) to give <em>kg CO<sub>2</sub>e</em>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span></pre></div>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from co2 emission, ch4 emission, n2o emission, and hfc emission&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:co2_emission</span><span class="p">,</span> <span class="ss">:ch4_emission</span><span class="p">,</span> <span class="ss">:n2o_emission</span><span class="p">,</span> <span class="ss">:hfc_emission</span><span class="o">]</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:co2_emission</span><span class="o">]</span> <span class="o">+</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:ch4_emission</span><span class="o">]</span> <span class="o">+</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:n2o_emission</span><span class="o">]</span> <span class="o">+</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:hfc_emission</span><span class="o">]</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
       </td>
     </tr>
-    <tr id='section-10'>
+    <tr id='section-CO&lt;sub&gt;2&lt;/sub&gt;_emission_(&lt;em&gt;kg&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-10">&#182;</a>
+          <a class="pilcrow" href="#section-CO&lt;sub&gt;2&lt;/sub&gt;_emission_(&lt;em&gt;kg&lt;/em&gt;)">&#182;</a>
         </div>
-        <p>Checks whether the trip <code>date</code> falls within the <code>timeframe</code>.</p>
+        <h3>CO<sub>2</sub> emission (<em>kg</em>)</h3>
+
+<p>One passenger&rsquo;s share of the trip&rsquo;s CO<sub>2</sub> emissions from anthropogenic sources during <code>timeframe</code>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                <span class="n">date</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Date</span><span class="p">)</span> <span class="p">?</span>
-                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">]</span> <span class="p">:</span>
-                  <span class="no">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">to_s</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">include?</span> <span class="n">date</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:co2_emission</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-11'>
@@ -203,28 +205,35 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-11">&#182;</a>
         </div>
-        <p>Multiplies each fuel intensity (<em>l / km</em>) for the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> by that <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s <code>co2 emission factor</code> (<em>kg / l</em>) and sums to give a combined <code>co2 emission factor</code> (<em>kg / km</em>).</p>
+        <p>Multiply each <code>fuel use</code> (<em>l</em>) by the <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s co2 emission factor (<em>kg / l</em>) to give co2 emissions from each fuel (<em>kg</em>).
+Sum the fuel co2 emissions to give <em>kg</em>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">combined_ef</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">gasoline_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">diesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">cng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lpg_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">methanol_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">biodiesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span></pre></div>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from fuel uses&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:fuel_uses</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:gasoline</span><span class="o">]</span>  <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:diesel</span><span class="o">]</span>    <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:cng</span><span class="o">]</span>       <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lng</span><span class="o">]</span>       <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lpg</span><span class="o">]</span>       <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:methanol</span><span class="o">]</span>  <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:biodiesel</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_emission_factor</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
       </td>
     </tr>
-    <tr id='section-12'>
+    <tr id='section-CO&lt;sub&gt;2&lt;/sub&gt;_biogenic_emission_(&lt;em&gt;kg&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-12">&#182;</a>
+          <a class="pilcrow" href="#section-CO&lt;sub&gt;2&lt;/sub&gt;_biogenic_emission_(&lt;em&gt;kg&lt;/em&gt;)">&#182;</a>
         </div>
-        <p>Multiplies distance (<em>km</em>) by the combined <code>co2 emission factor</code> (<em>kg / km</em>) and divides by <code>passengers</code> to give <em>kg</em>.</p>
+        <h2>CO<sub>2</sub> biogenic emission (<em>kg</em>)</h2>
+
+<p>One passenger&rsquo;s share of the trip&rsquo;s CO<sub>2</sub> emissions from biogenic sources during <code>timeframe</code>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance</span><span class="o">]</span> <span class="o">*</span> <span class="n">combined_ef</span> <span class="o">/</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:passengers</span><span class="o">]</span>
-                <span class="k">else</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:co2_biogenic_emission</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-13'>
@@ -232,50 +241,79 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-13">&#182;</a>
         </div>
-        <p>If the <code>date</code> does not fall within the <code>timeframe</code>, <code>co2 emission</code> is zero.</p>
+        <p>Multiply each <code>fuel use</code> (<em>l</em>) by the <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s co2 biogenic emission factor (<em>kg / l</em>) to give co2 biogenic emissions from each fuel (<em>kg</em>).
+Sum the fuel co2 biogenic emissions to give <em>kg</em>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="mi">0</span>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from fuel uses&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:fuel_uses</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:gasoline</span><span class="o">]</span>  <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:diesel</span><span class="o">]</span>    <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:cng</span><span class="o">]</span>       <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lng</span><span class="o">]</span>       <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lpg</span><span class="o">]</span>       <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:methanol</span><span class="o">]</span>  <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:biodiesel</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
+      </td>
+    </tr>
+    <tr id='section-CH&lt;sub&gt;4&lt;/sub&gt;_emission_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-CH&lt;sub&gt;4&lt;/sub&gt;_emission_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)">&#182;</a>
+        </div>
+        <h3>CH<sub>4</sub> emission (<em>kg CO<sub>2</sub>e</em>)</h3>
+
+<p>One passenger&rsquo;s share of the trip&rsquo;s CH<sub>4</sub> emissions during <code>timeframe</code>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:ch4_emission</span> <span class="k">do</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>Sum the <code>fuel uses</code> (<em>l</em>) to give total fuel use (<em>l</em>).
+Divide each <code>fuel use</code> (<em>l</em>) by total fuel use (<em>l</em>) and multiply by <code>distance per passenger</code> (<em>km</em>) to give the distance attributed to each fuel (<em>km</em>).
+Multiply the distance attributed to each fuel (<em>km</em>) by the <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s ch4 emission factor (<em>kg CO<sub>2</sub>e / km</em>) to give ch4 emissions from each fuel (<em>kg CO<sub>2</sub>e</em>).
+Sum the fuel ch4 emissions to give <em>kg CO<sub>2</sub>e</em>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance per passenger and fuel uses&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="p">,</span> <span class="ss">:fuel_uses</span><span class="o">]</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">total_fuel</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">].</span><span class="n">values</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">total_fuel</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:gasoline</span><span class="o">]</span>  <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:diesel</span><span class="o">]</span>    <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:cng</span><span class="o">]</span>       <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lng</span><span class="o">]</span>       <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lpg</span><span class="o">]</span>       <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:methanol</span><span class="o">]</span>  <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:biodiesel</span><span class="o">]</span> <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span>
+                <span class="k">else</span>
+                  <span class="mi">0</span>
                 <span class="k">end</span>
             <span class="k">end</span>
           <span class="k">end</span>
           </pre></div>
       </td>
     </tr>
-    <tr id='section-CO&lt;sub&gt;2&lt;/sub&gt;_biogenic_emission_calculation'>
+    <tr id='section-N&lt;sub&gt;2&lt;/sub&gt;O_emission_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-CO&lt;sub&gt;2&lt;/sub&gt;_biogenic_emission_calculation">&#182;</a>
+          <a class="pilcrow" href="#section-N&lt;sub&gt;2&lt;/sub&gt;O_emission_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)">&#182;</a>
         </div>
-        <h2>CO<sub>2</sub> biogenic emission calculation</h2>
+        <h3>N<sub>2</sub>O emission (<em>kg CO<sub>2</sub>e</em>)</h3>
 
-<p>Returns the <code>co2 biogenic emission</code> (<em>kg / l</em>).</p>
+<p>One passenger&rsquo;s share of the trip&rsquo;s N<sub>2</sub>O emissions during <code>timeframe</code>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:co2_biogenic_emission</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-CO&lt;sub&gt;2&lt;/sub&gt;_biogenic_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-CO&lt;sub&gt;2&lt;/sub&gt;_biogenic_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe">&#182;</a>
-        </div>
-        <h3>CO<sub>2</sub> biogenic emission from distance, bus class, passengers, date, and timeframe</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance, bus class, passengers, date, and timeframe&#39;</span><span class="p">,</span>
-              <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance</span><span class="p">,</span> <span class="ss">:bus_class</span><span class="p">,</span> <span class="ss">:date</span><span class="p">,</span> <span class="ss">:passengers</span><span class="o">]</span><span class="p">,</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-16'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
-        </div>
-        <p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:n2o_emission</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-17'>
@@ -283,30 +321,43 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-17">&#182;</a>
         </div>
-        <p>Checks whether the trip <code>date</code> falls within the <code>timeframe</code>.</p>
+        <p>Sum the <code>fuel uses</code> (<em>l</em>) to give total fuel use (<em>l</em>).
+Divide each <code>fuel use</code> (<em>l</em>) by total fuel use (<em>l</em>) and multiply by <code>distance per passenger</code> (<em>km</em>) to give the distance attributed to each fuel (<em>km</em>).
+Multiply the distance attributed to each fuel (<em>km</em>) by the <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s n2o emission factor (<em>kg CO<sub>2</sub>e / km</em>) to give n2o emissions from each fuel (<em>kg CO<sub>2</sub>e</em>).
+Sum the fuel n2o emissions to give <em>kg CO<sub>2</sub>e</em>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                <span class="n">date</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Date</span><span class="p">)</span> <span class="p">?</span>
-                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">]</span> <span class="p">:</span>
-                  <span class="no">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">to_s</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">include?</span> <span class="n">date</span></pre></div>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance per passenger and fuel uses&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="p">,</span> <span class="ss">:fuel_uses</span><span class="o">]</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">total_fuel</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">].</span><span class="n">values</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">total_fuel</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:gasoline</span><span class="o">]</span>  <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:diesel</span><span class="o">]</span>    <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:cng</span><span class="o">]</span>       <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lng</span><span class="o">]</span>       <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:lpg</span><span class="o">]</span>       <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:methanol</span><span class="o">]</span>  <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
+                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_uses</span><span class="o">][</span><span class="ss">:biodiesel</span><span class="o">]</span> <span class="o">/</span> <span class="n">total_fuel</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span>
+                <span class="k">else</span>
+                  <span class="mi">0</span>
+                <span class="k">end</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
       </td>
     </tr>
-    <tr id='section-18'>
+    <tr id='section-HFC_emission_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-18">&#182;</a>
+          <a class="pilcrow" href="#section-HFC_emission_(&lt;em&gt;kg_CO&lt;sub&gt;2&lt;/sub&gt;e&lt;/em&gt;)">&#182;</a>
         </div>
-        <p>Multiplies each fuel intensity (<em>l / km</em>) for the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> by that <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s <code>co2 biogenic emission factor</code> (<em>kg / l</em>) and sums to give a combined <code>co2 biogenic emission factor</code> (<em>kg / km</em>).</p>
+        <h3>HFC emission (<em>kg CO<sub>2</sub>e</em>)</h3>
+
+<p>One passenger&rsquo;s share of the trip&rsquo;s HFC emissions during <code>timeframe</code>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">combined_ef</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">gasoline_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">diesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">cng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lpg_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">methanol_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">biodiesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">co2_biogenic_emission_factor</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:hfc_emission</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-19'>
@@ -314,51 +365,69 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-19">&#182;</a>
         </div>
-        <p>Multiplies distance (<em>km</em>) by the combined <code>co2 biogenic emission factor</code> (<em>kg / km</em>) and divides by <code>passengers</code> to give <em>kg</em>.</p>
+        <p>Multiply <code>distance per passenger</code> (<em>km</em>) by the <code>bus class</code> air conditioning emission factor (<em>kg CO<sub>2</sub>e / km</em>) to give <em>kg CO<sub>2</sub>e</em>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance</span><span class="o">]</span> <span class="o">*</span> <span class="n">combined_ef</span> <span class="o">/</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:passengers</span><span class="o">]</span>
-                <span class="k">else</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-20'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-20">&#182;</a>
-        </div>
-        <p>If the <code>date</code> does not fall within the <code>timeframe</code>, <code>co2 biogenic emission</code> is zero.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>                  <span class="mi">0</span>
-                <span class="k">end</span>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance per passenger and bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="p">,</span> <span class="ss">:bus_class</span><span class="o">]</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">air_conditioning_emission_factor</span>
             <span class="k">end</span>
           <span class="k">end</span>
+          
+<span class="cm">=begin</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Energy_(&lt;em&gt;MJ&lt;/em&gt;)'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Energy_(&lt;em&gt;MJ&lt;/em&gt;)">&#182;</a>
+        </div>
+        <h3>Energy (<em>MJ</em>)</h3>
+
+<p>One passenger&rsquo;s share of the trip&rsquo;s energy use during <code>timeframe</code>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="cm">          committee :energy do</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-21'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p>Multiply each <code>fuel use</code> (<em>l</em>) by the <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s energy content (<em>MJ / l</em>) to give energy for each fuel (<em>MJ</em>).
+Sum the fuel energies to give <em>MJ</em>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="cm">            quorum &#39;from fuel uses&#39;, :needs =&gt; :fuel_uses do |characteristics|</span>
+<span class="cm">              characteristics[:fuel_uses][:gasoline]  * BusFuel.find_by_name(&quot;Gasoline&quot;).energy_content +</span>
+<span class="cm">              characteristics[:fuel_uses][:diesel]    * BusFuel.find_by_name(&quot;Diesel&quot;).energy_content +</span>
+<span class="cm">              characteristics[:fuel_uses][:cng]       * BusFuel.find_by_name(&quot;CNG&quot;).energy_content +</span>
+<span class="cm">              characteristics[:fuel_uses][:lng]       * BusFuel.find_by_name(&quot;LNG&quot;).energy_content +</span>
+<span class="cm">              characteristics[:fuel_uses][:lpg]       * BusFuel.find_by_name(&quot;LPG&quot;).energy_content +</span>
+<span class="cm">              characteristics[:fuel_uses][:methanol]  * BusFuel.find_by_name(&quot;Methanol&quot;).energy_content +</span>
+<span class="cm">              characteristics[:fuel_uses][:biodiesel] * BusFuel.find_by_name(&quot;Biodiesel&quot;).energy_content</span>
+<span class="cm">            end</span>
+<span class="cm">          end</span>
+<span class="cm">=end</span>
+
+<span class="cm">=begin</span>
+<span class="cm">  NOTE: electricity use is negligible (contributes about 0.001% of total emissions)</span>
+<span class="cm">=end</span>
           </pre></div>
       </td>
     </tr>
-    <tr id='section-CH&lt;sub&gt;4&lt;/sub&gt;_emission_calculation'>
+    <tr id='section-Fuel_uses_(&lt;em&gt;l&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-CH&lt;sub&gt;4&lt;/sub&gt;_emission_calculation">&#182;</a>
+          <a class="pilcrow" href="#section-Fuel_uses_(&lt;em&gt;l&lt;/em&gt;)">&#182;</a>
         </div>
-        <h2>CH<sub>4</sub> emission calculation</h2>
+        <h3>Fuel uses (<em>l</em>)</h3>
 
-<p>Returns the <code>ch4 emission</code> (<em>kg co2e / l</em>).</p>
+<p>One passenger&rsquo;s share of the trip&rsquo;s use of each of a variety of <a href="http://data.brighterplanet.com/bus_fuels">bus fuels</a> during <code>timeframe</code>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:ch4_emission</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-CH&lt;sub&gt;4&lt;/sub&gt;_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-CH&lt;sub&gt;4&lt;/sub&gt;_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe">&#182;</a>
-        </div>
-        <h3>CH<sub>4</sub> emission from distance, bus class, passengers, date, and timeframe</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance, bus class, passengers, date, and timeframe&#39;</span><span class="p">,</span>
-              <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance</span><span class="p">,</span> <span class="ss">:bus_class</span><span class="p">,</span> <span class="ss">:passengers</span><span class="p">,</span> <span class="ss">:date</span><span class="o">]</span><span class="p">,</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:fuel_uses</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-23'>
@@ -366,24 +435,36 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-23">&#182;</a>
         </div>
-        <p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol</p>
+        <p>For each fuel, multiply <code>distance per passenger</code> (<em>km</em>) by the <code>bus class</code> fuel intensity for the fuel (<em>l / km</em>) to give <em>l</em>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span></pre></div>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance per passenger and bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="p">,</span> <span class="ss">:bus_class</span><span class="o">]</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="p">{</span>
+                  <span class="ss">:gasoline</span>  <span class="o">=&gt;</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">gasoline_intensity</span><span class="p">),</span>
+                  <span class="ss">:diesel</span>    <span class="o">=&gt;</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">diesel_intensity</span><span class="p">),</span>
+                  <span class="ss">:cng</span>       <span class="o">=&gt;</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">cng_intensity</span><span class="p">),</span>
+                  <span class="ss">:lng</span>       <span class="o">=&gt;</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lng_intensity</span><span class="p">),</span>
+                  <span class="ss">:lpg</span>       <span class="o">=&gt;</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lpg_intensity</span><span class="p">),</span>
+                  <span class="ss">:methanol</span>  <span class="o">=&gt;</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">methanol_intensity</span><span class="p">),</span>
+                  <span class="ss">:biodiesel</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance_per_passenger</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">biodiesel_intensity</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
       </td>
     </tr>
-    <tr id='section-24'>
+    <tr id='section-Distance_per_passenger_(&lt;em&gt;km&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-24">&#182;</a>
+          <a class="pilcrow" href="#section-Distance_per_passenger_(&lt;em&gt;km&lt;/em&gt;)">&#182;</a>
         </div>
-        <p>Checks whether the trip <code>date</code> falls within the <code>timeframe</code>.</p>
+        <h3>Distance per passenger (<em>km</em>)</h3>
+
+<p>The distance traveled per passenger during <code>timeframe</code>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                <span class="n">date</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Date</span><span class="p">)</span> <span class="p">?</span>
-                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">]</span> <span class="p">:</span>
-                  <span class="no">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">to_s</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">include?</span> <span class="n">date</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:distance_per_passenger</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-25'>
@@ -391,33 +472,33 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-25">&#182;</a>
         </div>
-        <p>Multiplies each fuel intensity (<em>l / km</em>) for the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> by that <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s <code>ch4 emission factor</code> (<em>kg CO<sub>2</sub>e / km</em>) and sums to give a combined <code>ch4 emission factor</code> (<em>kg CO<sub>2</sub>e l / km<sup>2</sup></em>).</p>
+        <p>If <code>date</code> falls within <code>timeframe</code>, divide <code>distance</code> (<em>km</em>) by <code>passengers</code> to give <em>km</em>.
+Otherwise distance per passenger is zero.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">combined_ef</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">gasoline_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">diesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">cng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lpg_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">methanol_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">biodiesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ch4_emission_factor</span></pre></div>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance, passengers, date, and timeframe&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance</span><span class="p">,</span> <span class="ss">:passengers</span><span class="p">,</span> <span class="ss">:date</span><span class="o">]</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span>
+<span class="cm">=begin</span>
+<span class="cm">  FIXME TODO date should already be coerced</span>
+<span class="cm">=end</span>
+                <span class="n">date</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Date</span><span class="p">)</span> <span class="p">?</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">]</span> <span class="p">:</span> <span class="no">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">to_s</span><span class="p">)</span>
+                <span class="n">timeframe</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">date</span><span class="p">)</span> <span class="p">?</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance</span><span class="o">]</span> <span class="o">/</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:passengers</span><span class="o">]</span> <span class="p">:</span> <span class="mi">0</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
       </td>
     </tr>
-    <tr id='section-26'>
+    <tr id='section-Distance_(&lt;em&gt;km&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-26">&#182;</a>
+          <a class="pilcrow" href="#section-Distance_(&lt;em&gt;km&lt;/em&gt;)">&#182;</a>
         </div>
-        <p>Adds the individual fuel intensities for the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> to give <code>total fuel intensity</code> (<em>l / km</em>).</p>
+        <h3>Distance (<em>km</em>)</h3>
+
+<p>The trip&rsquo;s distance.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">total_intensity</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">gasoline_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">diesel_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">cng_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lng_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lpg_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">methanol_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">biodiesel_intensity</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:distance</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-27'>
@@ -425,12 +506,10 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-27">&#182;</a>
         </div>
-        <p>Divides the combined <code>ch4 emission factor</code> (<em>kg CO<sub>2</sub>e l / km<sup>2</sup></em>) by the total intensity (<em>l / km</em>), multiplies by distance (<em>km</em>), and divides by <code>passengers</code> to give <em>kg CO<sub>2</sub>e</em>.
-(This distributes the total travel between the various fuels; we need to do this because the <code>ch4 emission factor</code> is emission per unit distance rather than per unit fuel.)</p>
+        <p>Use client input, if available.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance</span><span class="o">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">combined_ef</span> <span class="o">/</span> <span class="n">total_intensity</span><span class="p">))</span> <span class="o">/</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:passengers</span><span class="o">]</span>
-                <span class="k">else</span></pre></div>
+        <div class='highlight'><pre>            </pre></div>
       </td>
     </tr>
     <tr id='section-28'>
@@ -438,39 +517,42 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-28">&#182;</a>
         </div>
-        <p>If the <code>date</code> does not fall within the <code>timeframe</code>, <code>ch4 emission</code> is zero.</p>
+        <p>Otherwise divide <code>duration</code> (<em>seconds</em>) by 3600 (<em>seconds / hour</em>) and multiply by <code>speed</code> (<em>km / hour</em>) to give <em>km</em>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="mi">0</span>
-                <span class="k">end</span>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from duration and speed&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:duration</span><span class="p">,</span> <span class="ss">:speed</span><span class="o">]</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:duration</span><span class="o">]</span> <span class="o">/</span> <span class="mi">3600</span><span class="o">.</span><span class="mi">0</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:speed</span><span class="o">]</span>
+            <span class="k">end</span>
+            </pre></div>
+      </td>
+    </tr>
+    <tr id='section-29'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-29">&#182;</a>
+        </div>
+        <p>Otherwise look up the <code>bus class</code> average trip distance (<em>km</em>).</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:bus_class</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">distance</span>
             <span class="k">end</span>
           <span class="k">end</span>
           </pre></div>
       </td>
     </tr>
-    <tr id='section-N&lt;sub&gt;2&lt;/sub&gt;O_emission_calculation'>
+    <tr id='section-Speed_(&lt;em&gt;km_/_hour&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-N&lt;sub&gt;2&lt;/sub&gt;O_emission_calculation">&#182;</a>
+          <a class="pilcrow" href="#section-Speed_(&lt;em&gt;km_/_hour&lt;/em&gt;)">&#182;</a>
         </div>
-        <h2>N<sub>2</sub>O emission calculation</h2>
+        <h3>Speed (<em>km / hour</em>)</h3>
 
-<p>Returns the <code>n2o emission</code> (<em>kg CO<sub>2</sub>e / l</em>).</p>
+<p>The trip&rsquo;s average speed.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:n2o_emission</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-N&lt;sub&gt;2&lt;/sub&gt;O_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-N&lt;sub&gt;2&lt;/sub&gt;O_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe">&#182;</a>
-        </div>
-        <h3>N<sub>2</sub>O emission from distance, bus class, passengers, date, and timeframe</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance, bus class, passengers, date, and timeframe&#39;</span><span class="p">,</span>
-              <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance</span><span class="p">,</span> <span class="ss">:bus_class</span><span class="p">,</span> <span class="ss">:passengers</span><span class="p">,</span> <span class="ss">:date</span><span class="o">]</span><span class="p">,</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:speed</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-31'>
@@ -478,41 +560,43 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-31">&#182;</a>
         </div>
-        <p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol</p>
+        <p>Look up the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> average speed (<em>km / hour</em>).</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span></pre></div>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:bus_class</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">speed</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
       </td>
     </tr>
-    <tr id='section-32'>
+    <tr id='section-Duration_(&lt;em&gt;seconds&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-32">&#182;</a>
+          <a class="pilcrow" href="#section-Duration_(&lt;em&gt;seconds&lt;/em&gt;)">&#182;</a>
         </div>
-        <p>Checks whether the trip <code>date</code> falls within the <code>timeframe</code>.</p>
+        <h3>Duration (<em>seconds</em>)</h3>
+
+<p>The trip&rsquo;s duration.</p>
+
+<p>Use client input if available</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                <span class="n">date</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Date</span><span class="p">)</span> <span class="p">?</span>
-                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">]</span> <span class="p">:</span>
-                  <span class="no">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">to_s</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">include?</span> <span class="n">date</span></pre></div>
+        <div class='highlight'><pre>          </pre></div>
       </td>
     </tr>
-    <tr id='section-33'>
+    <tr id='section-Passengers'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-33">&#182;</a>
+          <a class="pilcrow" href="#section-Passengers">&#182;</a>
         </div>
-        <p>Multiplies each fuel intensity (<em>l / km</em>) for the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> by that <a href="http://data.brighterplanet.com/bus_fuels">fuel</a>&rsquo;s <code>n2o emission factor</code> (<em>kg CO<sub>2</sub>e / km</em>) and sums to give a combined <code>n2o emission factor</code> (<em>kg CO<sub>2</sub>e l / km<sup>2</sup></em>).</p>
+        <h3>Passengers</h3>
+
+<p>The number of passengers on the bus.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">combined_ef</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">gasoline_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gasoline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">diesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Diesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">cng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;CNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lng_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LNG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lpg_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;LPG&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">methanol_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Methanol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span> <span class="o">+</span>
-                                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">biodiesel_intensity</span> <span class="o">*</span> <span class="no">BusFuel</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Biodiesel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">n2o_emission_factor</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:passengers</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-34'>
@@ -520,29 +604,28 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-34">&#182;</a>
         </div>
-        <p>Adds the individual fuel intensities for the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> to give <code>total fuel intensity</code> (<em>l / km</em>).</p>
+        <p>Look up the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> average number of passengers.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">total_intensity</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">gasoline_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">diesel_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">cng_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lng_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">lpg_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">methanol_intensity</span> <span class="o">+</span>
-                                    <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">biodiesel_intensity</span></pre></div>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:bus_class</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+                <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">passengers</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          </pre></div>
       </td>
     </tr>
-    <tr id='section-35'>
+    <tr id='section-Bus_class'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-35">&#182;</a>
+          <a class="pilcrow" href="#section-Bus_class">&#182;</a>
         </div>
-        <p>Divides the combined <code>n2o emission factor</code> (<em>kg CO<sub>2</sub>e l / km<sup>2</sup></em>) by the total intensity (<em>l / km</em>), multiplies by distance (<em>km</em>), and divides by <code>passengers</code> to give <em>kg CO<sub>2</sub>e</em>.
-(This distributes the total travel between the various fuels; we need to do this because the <code>n2o emission factor</code> is emission per unit distance rather than per unit fuel.)</p>
+        <h3>Bus class</h3>
+
+<p>The type of bus used.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="n">combined_ef</span> <span class="o">/</span> <span class="n">total_intensity</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance</span><span class="o">]</span> <span class="o">/</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:passengers</span><span class="o">]</span>
-                <span class="k">else</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:bus_class</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-36'>
@@ -550,39 +633,39 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-36">&#182;</a>
         </div>
-        <p>If the <code>date</code> does not fall within the <code>timeframe</code>, <code>n2o emission</code> is zero.</p>
+        <p>Use client input, if available.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>                  <span class="mi">0</span>
-                <span class="k">end</span>
+        <div class='highlight'><pre>            </pre></div>
+      </td>
+    </tr>
+    <tr id='section-37'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-37">&#182;</a>
+        </div>
+        <p>Otherwise use an artificial <a href="http://data.brighterplanet.com/bus_classes">bus class</a> that represents US averages.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span>
+                <span class="no">BusClass</span><span class="o">.</span><span class="n">fallback</span>
             <span class="k">end</span>
           <span class="k">end</span>
           </pre></div>
       </td>
     </tr>
-    <tr id='section-HFC_emission_calculation'>
+    <tr id='section-Date_(&lt;em&gt;date&lt;/em&gt;)'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-HFC_emission_calculation">&#182;</a>
+          <a class="pilcrow" href="#section-Date_(&lt;em&gt;date&lt;/em&gt;)">&#182;</a>
         </div>
-        <h2>HFC emission calculation</h2>
+        <h3>Date (<em>date</em>)</h3>
 
-<p>Returns the <code>hfc emission</code> (<em>kg CO<sub>2</sub></em>).</p>
+<p>The day the trip occurred.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:hfc_emission</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-HFC_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-HFC_emission_from_distance,_bus_class,_passengers,_date,_and_timeframe">&#182;</a>
-        </div>
-        <h3>HFC emission from distance, bus class, passengers, date, and timeframe</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from distance, bus class, passengers, date, and timeframe&#39;</span><span class="p">,</span>
-              <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance</span><span class="p">,</span> <span class="ss">:bus_class</span><span class="p">,</span> <span class="ss">:passengers</span><span class="p">,</span> <span class="ss">:date</span><span class="o">]</span><span class="p">,</span></pre></div>
+        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:date</span> <span class="k">do</span></pre></div>
       </td>
     </tr>
     <tr id='section-39'>
@@ -590,10 +673,10 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-39">&#182;</a>
         </div>
-        <p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14046-1, Climate Registry Protocol</p>
+        <p>Use client input, if available.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span></pre></div>
+        <div class='highlight'><pre>            </pre></div>
       </td>
     </tr>
     <tr id='section-40'>
@@ -601,385 +684,16 @@ Contact Brighter Planet for dual-license arrangements.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-40">&#182;</a>
         </div>
-        <p>Checks whether the trip <code>date</code> falls within the <code>timeframe</code>.</p>
+        <p>Otherwise use the first day of <code>timeframe</code>.</p>
+
       </td>
       <td class=code>
-        <div class='highlight'><pre>                <span class="n">date</span> <span class="o">=</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Date</span><span class="p">)</span> <span class="p">?</span>
-                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">]</span> <span class="p">:</span>
-                  <span class="no">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:date</span><span class="o">].</span><span class="n">to_s</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">include?</span> <span class="n">date</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-41'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-41">&#182;</a>
-        </div>
-        <p>Looks up <code>HFC emission factor</code> (<em>kg CO<sub>2</sub>e / km</em>) for the <a href="http://data.brighterplanet.com/bus_classes">bus class</a>, multiplies by the <code>distance</code> (<em>km</em>), and divides by <code>passengers</code> to give <em>kg CO<sub>2</sub>e</em>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>                  <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">air_conditioning_emission_factor</span> <span class="o">/</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:passengers</span><span class="o">]</span>
-                <span class="k">else</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-42'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-42">&#182;</a>
-        </div>
-        <p>If the <code>date</code> does not fall within the <code>timeframe</code>, <code>HFC emission</code> is zero.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>                  <span class="mi">0</span>
-                <span class="k">end</span>
+        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from timeframe&#39;</span><span class="p">,</span>
+              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span>
+                <span class="n">timeframe</span><span class="o">.</span><span class="n">from</span>
             <span class="k">end</span>
           <span class="k">end</span>
-          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Distance_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Distance_calculation">&#182;</a>
-        </div>
-        <h2>Distance calculation</h2>
-
-<p>Returns the <code>distance</code> travelled (<em>km</em>).</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:distance</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-Distance_from_client_input'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Distance_from_client_input">&#182;</a>
-        </div>
-        <h3>Distance from client input</h3>
-
-<p><strong>Complies:</strong> All</p>
-
-<p>Uses the client-input <code>distance</code> (<em>km</em>).</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Distance_from_duration_and_speed'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Distance_from_duration_and_speed">&#182;</a>
-        </div>
-        <h3>Distance from duration and speed</h3>
-
-<p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from duration and speed&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:duration</span><span class="p">,</span> <span class="ss">:speed</span><span class="o">]</span><span class="p">,</span> <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-46'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-46">&#182;</a>
-        </div>
-        <p>Divides <code>duration</code> (<em>seconds</em>) by 3600 and multiplies by <code>speed</code> (<em>km / hour</em>) to give <em>km</em>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:duration</span><span class="o">]</span> <span class="o">/</span> <span class="mi">3600</span><span class="o">.</span><span class="mi">0</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:speed</span><span class="o">]</span>
-            <span class="k">end</span>
-            </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Distance_from_bus_class'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Distance_from_bus_class">&#182;</a>
-        </div>
-        <h3>Distance from bus class</h3>
-
-<p><strong>Complies:</strong></p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:bus_class</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-48'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-48">&#182;</a>
-        </div>
-        <p>Looks up the <a href="http://data.brighterplanet.com/bus_classes">bus class</a> <code>distance</code> (<em>km</em>).</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">distance</span>
-            <span class="k">end</span>
-          <span class="k">end</span>
-          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Speed_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Speed_calculation">&#182;</a>
-        </div>
-        <h2>Speed calculation</h2>
-
-<p>Returns the average <code>speed</code> (<em>km / hour</em>).</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:speed</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-Speed_from_bus_class'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Speed_from_bus_class">&#182;</a>
-        </div>
-        <h3>Speed from bus class</h3>
-
-<p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:bus_class</span><span class="p">,</span> <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-51'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-51">&#182;</a>
-        </div>
-        <p>Looks up the <a href="http://data.brighterplanet.com/bus_classes">bus class</a>&lsquo; average <code>speed</code> (<em>km / hour</em>).</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">speed</span>
-            <span class="k">end</span>
-          <span class="k">end</span>
-          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Duration_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Duration_calculation">&#182;</a>
-        </div>
-        <h2>Duration calculation</h2>
-
-<p>Returns the trip&rsquo;s <code>duration</code> (<em>seconds</em>).</p>
-
-<h3>Duration from client input</h3>
-
-<p><strong>Complies:</strong> All</p>
-
-<p>Uses the client-input <code>duration</code> (<em>seconds</em>).</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Passengers_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Passengers_calculation">&#182;</a>
-        </div>
-        <h2>Passengers calculation</h2>
-
-<p>Returns the number of <code>passengers</code> on the bus.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:passengers</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-Passengers_from_bus_class'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Passengers_from_bus_class">&#182;</a>
-        </div>
-        <h3>Passengers from bus class</h3>
-
-<p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from bus class&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:bus_class</span><span class="p">,</span> <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-55'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-55">&#182;</a>
-        </div>
-        <p>Looks up the <a href="http://data.brighterplanet.com/bus_classes">bus class</a>&lsquo; average number of <code>passengers</code>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:bus_class</span><span class="o">].</span><span class="n">passengers</span>
-            <span class="k">end</span>
-          <span class="k">end</span>
-          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Bus_class_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Bus_class_calculation">&#182;</a>
-        </div>
-        <h2>Bus class calculation</h2>
-
-<p>Returns the <code>bus class</code>.
-This is the type of bus used.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:bus_class</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-From_client_input'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-From_client_input">&#182;</a>
-        </div>
-        <h3>From client input</h3>
-
-<p><strong>Complies:</strong> All</p>
-
-<p>Uses the client-input <a href="http://data.brighterplanet.com/bus_classes">bus class</a>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Default_bus_class'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Default_bus_class">&#182;</a>
-        </div>
-        <h3>Default bus class</h3>
-
-<p><strong>Complies:</strong> GHG Protocol Scope 3, ISO 14064-1, Climate Registry Protocol</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-59'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-59">&#182;</a>
-        </div>
-        <p>Uses a fallback <a href="http://data.brighterplanet.com/bus_classes">bus class</a> that represents the U.S. average.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="no">BusClass</span><span class="o">.</span><span class="n">fallback</span>
-            <span class="k">end</span>
-          <span class="k">end</span>
-          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Date_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Date_calculation">&#182;</a>
-        </div>
-        <h2>Date calculation</h2>
-
-<p>Returns the <code>date</code> on which the trip occurred.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          <span class="n">committee</span> <span class="ss">:date</span> <span class="k">do</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-Date_from_client_input'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Date_from_client_input">&#182;</a>
-        </div>
-        <h3>Date from client input</h3>
-
-<p><strong>Complies:</strong> All</p>
-
-<p>Uses the client-input <code>date</code>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Date_from_timeframe'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Date_from_timeframe">&#182;</a>
-        </div>
-        <h3>Date from timeframe</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            <span class="n">quorum</span> <span class="s1">&#39;from timeframe&#39;</span><span class="p">,</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-63'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-63">&#182;</a>
-        </div>
-        <p><strong>Complies:</strong> GHG Protocol Scope 3, ISO-14064-1, Climate Registry Protocol</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>              <span class="ss">:complies</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:ghg_protocol_scope_3</span><span class="p">,</span> <span class="ss">:iso</span><span class="p">,</span> <span class="ss">:tcr</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-64'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-64">&#182;</a>
-        </div>
-        <p>Assumes the trip occurred on the first day of the <code>timeframe</code>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>                <span class="n">timeframe</span><span class="o">.</span><span class="n">from</span>
-            <span class="k">end</span>
-          <span class="k">end</span>
-          </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Timeframe_calculation'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Timeframe_calculation">&#182;</a>
-        </div>
-        <h2>Timeframe calculation</h2>
-
-<p>Returns the <code>timeframe</code>.
-This is the period during which to calculate emissions.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Timeframe_from_client_input'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Timeframe_from_client_input">&#182;</a>
-        </div>
-        <h3>Timeframe from client input</h3>
-
-<p><strong>Complies:</strong> All</p>
-
-<p>Uses the client-input <code>timeframe</code>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>            </pre></div>
-      </td>
-    </tr>
-    <tr id='section-Default_timeframe'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Default_timeframe">&#182;</a>
-        </div>
-        <h3>Default timeframe</h3>
-
-<p><strong>Complies:</strong> All</p>
-
-<p>Uses the current calendar year.</p>
-
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>        <span class="k">end</span>
+        <span class="k">end</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
