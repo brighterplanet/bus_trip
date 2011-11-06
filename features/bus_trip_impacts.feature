@@ -8,12 +8,14 @@ Feature: Bus Trip Emissions Calculations
     Given a bus trip has nothing
     When impacts are calculated
     Then the amount of "carbon" should be within "0.01" of "1.15"
+    And the calculation should not comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario Outline: Calculations for bus trip from date
     Given it has "date" of "<date>"
     And it has "timeframe" of "<timeframe>"
     When impacts are calculated
     Then the amount of "carbon" should be within "0.01" of "<emission>"
+    And the calculation should not comply with standards "ghg_protocol_scope_3, iso, tcr"
     Examples:
       | date       | timeframe             | emission |
       | 2010-06-01 | 2010-01-01/2011-01-01 | 1.15     |
@@ -23,19 +25,23 @@ Feature: Bus Trip Emissions Calculations
     Given it has "distance" of "100"
     When impacts are calculated
     Then the amount of "carbon" should be within "0.01" of "14.37"
+    And the calculation should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: Calculations for bus trip from duration
     Given it has "duration" of "1800"
     When impacts are calculated
     Then the amount of "carbon" should be within "0.01" of "2.29"
+    And the calculation should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: Calculations for bus trip from bus class
     Given it has "bus_class.name" of "city transit"
     When impacts are calculated
     Then the amount of "carbon" should be within "0.01" of "0.88"
+    And the calculation should not comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: Calculations for bus trip from bus class and distance
     Given it has "bus_class.name" of "city transit"
     And it has "distance" of "10000"
     When impacts are calculated
     Then the amount of "carbon" should be within "0.01" of "1469.93"
+    And the calculation should comply with standards "ghg_protocol_scope_3, iso, tcr"

@@ -9,38 +9,45 @@ Feature: Bus Trip Committee Calculations
     When the "date" committee reports
     Then the committee should have used quorum "from timeframe"
     And the conclusion of the committee should be "2009-06-06"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: Passengers from default bus class
     When the "bus_class" committee reports
     And the "passengers" committee reports
     Then the conclusion of the committee should be "7.485"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
   
   Scenario: Passengers from bus class
     Given a characteristic "bus_class.name" of "city transit"
     When the "passengers" committee reports
     Then the conclusion of the committee should be "9.0"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
   
   Scenario: Speed from default bus class
     When the "bus_class" committee reports
     And the "speed" committee reports
     Then the conclusion of the committee should be "31.94387"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
   
   Scenario: Speed from bus class
     Given a characteristic "bus_class.name" of "city transit"
     When the "speed" committee reports
     Then the conclusion of the committee should be "21.0"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
   
   Scenario: Distance from default bus class
     When the "bus_class" committee reports
     And the "distance" committee reports
     Then the committee should have used quorum "from bus class"
     And the conclusion of the committee should be "8.00262"
+    And the conclusion should not comply with standards "ghg_protocol_scope_3, iso, tcr"
   
   Scenario: Distance from bus class
     Given a characteristic "bus_class.name" of "city transit"
     When the "distance" committee reports
     Then the committee should have used quorum "from bus class"
     And the conclusion of the committee should be "6.0"
+    And the conclusion should not comply with standards "ghg_protocol_scope_3, iso, tcr"
   
   Scenario: Distance from duration and speed
     Given a characteristic "duration" of "1800"
@@ -49,6 +56,7 @@ Feature: Bus Trip Committee Calculations
     And the "distance" committee reports
     Then the committee should have used quorum "from duration and speed"
     And the conclusion of the committee should be "15.97193"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario Outline: Distance per passenger from distance, passengers, date, and timeframe
     Given a characteristic "distance" of "100"
@@ -58,6 +66,7 @@ Feature: Bus Trip Committee Calculations
     When the "distance_per_passenger" committee reports
     Then the committee should have used quorum "from distance, passengers, date, and timeframe"
     And the conclusion of the committee should be "<distance>"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
     Examples:
       | timeframe             | date       | distance |
       | 2010-01-01/2010-02-01 | 2010-01-31 | 10.0     |
@@ -75,6 +84,7 @@ Feature: Bus Trip Committee Calculations
     And the conclusion of the committee should include a key of "lpg" and value "0.0087"
     And the conclusion of the committee should include a key of "methanol" and value "0.00494"
     And the conclusion of the committee should include a key of "biodiesel" and value "0.23028"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: Fuel uses from distance per passenger and bus class
     Given a characteristic "distance_per_passenger" of "1000"
@@ -88,6 +98,16 @@ Feature: Bus Trip Committee Calculations
     And the conclusion of the committee should include a key of "lpg" and value "2.0"
     And the conclusion of the committee should include a key of "methanol" and value "1.0"
     And the conclusion of the committee should include a key of "biodiesel" and value "40.0"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
+
+  # Scenario: Energy from fuel uses
+  #   Given a characteristic "distance_per_passenger" of "10"
+  #   And a characteristic "bus_class.name" of "city transit"
+  #   When the "fuel_uses" committee reports
+  #   And the "energy" committee reports
+  #   Then the committee should have used quorum "from fuel uses"
+  #   And the conclusion of the committee should be ""
+  #   And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: HFC emission from distance per passenger and default bus class
     Given a characteristic "distance_per_passenger" of "10"
@@ -95,6 +115,7 @@ Feature: Bus Trip Committee Calculations
     And the "hfc_emission" committee reports
     Then the committee should have used quorum "from distance per passenger and bus class"
     And the conclusion of the committee should be "0.29695"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: HFC emission from distance per passenger and bus class
     Given a characteristic "distance_per_passenger" of "1000"
@@ -102,6 +123,7 @@ Feature: Bus Trip Committee Calculations
     When the "hfc_emission" committee reports
     Then the committee should have used quorum "from distance per passenger and bus class"
     And the conclusion of the committee should be "10.0"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: N2O emission from distance per passenger and fuel uses
     Given a characteristic "distance_per_passenger" of "1000"
@@ -110,6 +132,7 @@ Feature: Bus Trip Committee Calculations
     And the "n2o_emission" committee reports
     Then the committee should have used quorum "from distance per passenger and fuel uses"
     And the conclusion of the committee should be "7.75249"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: CH4 emission from distance per passenger and fuel uses
     Given a characteristic "distance_per_passenger" of "1000"
@@ -118,6 +141,7 @@ Feature: Bus Trip Committee Calculations
     And the "ch4_emission" committee reports
     Then the committee should have used quorum "from distance per passenger and fuel uses"
     And the conclusion of the committee should be "6.54527"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: CO2 biogenic emission from distance per passenger and fuel uses
     Given a characteristic "distance_per_passenger" of "1000"
@@ -126,6 +150,7 @@ Feature: Bus Trip Committee Calculations
     And the "co2_biogenic_emission" committee reports
     Then the committee should have used quorum "from fuel uses"
     And the conclusion of the committee should be "99.88200"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
 
   Scenario: CO2 emission from distance per passenger and fuel uses
     Given a characteristic "distance_per_passenger" of "1000"
@@ -134,3 +159,4 @@ Feature: Bus Trip Committee Calculations
     And the "co2_emission" committee reports
     Then the committee should have used quorum "from fuel uses"
     And the conclusion of the committee should be "1298.63916"
+    And the conclusion should comply with standards "ghg_protocol_scope_3, iso, tcr"
