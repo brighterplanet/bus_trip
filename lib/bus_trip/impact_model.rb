@@ -142,6 +142,23 @@ module BrighterPlanet
                 characteristics[:distance_per_passenger] * characteristics[:bus_class].air_conditioning_emission_factor
             end
           end
+          
+          # #### Energy (*MJ*)
+          # # One passenger's share of the trip's energy use during `timeframe`.
+          # committee :energy do
+          #   # Multiply each `fuel use` (*l*) by the [fuel](http://data.brighterplanet.com/bus_fuels)'s energy content (*MJ / l*) to give energy for each fuel (*MJ*).
+          #   # Sum the fuel energies to give *MJ*.
+          #   quorum 'from fuel uses', :needs => :fuel_uses do |characteristics|
+          #     characteristics[:fuel_uses][:gasoline]  * BusFuel.find_by_name("Gasoline").energy_content +
+          #     characteristics[:fuel_uses][:diesel]    * BusFuel.find_by_name("Diesel").energy_content +
+          #     characteristics[:fuel_uses][:cng]       * BusFuel.find_by_name("CNG").energy_content +
+          #     characteristics[:fuel_uses][:lng]       * BusFuel.find_by_name("LNG").energy_content +
+          #     characteristics[:fuel_uses][:lpg]       * BusFuel.find_by_name("LPG").energy_content +
+          #     characteristics[:fuel_uses][:methanol]  * BusFuel.find_by_name("Methanol").energy_content +
+          #     characteristics[:fuel_uses][:biodiesel] * BusFuel.find_by_name("Biodiesel").energy_content
+          #   end
+          # end
+          
 =begin
   NOTE: electricity use is negligible (contributes about 0.001% of total emissions)
 =end
