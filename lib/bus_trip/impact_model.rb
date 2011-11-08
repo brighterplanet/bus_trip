@@ -40,7 +40,7 @@ module BrighterPlanet
           # * * *
           
           #### Carbon (*kg CO<sub>2</sub>e*)
-          # One passenger's share of the trip's anthropogenic greenhouse gas emissions during `timeframe`.
+          # *One passenger's share of the trip's anthropogenic greenhouse gas emissions during `timeframe`.*
           committee :carbon do
             # Sum `co2 emission` (*kg*), `ch4 emission` (*kg CO<sub>2</sub>e*), `n2o emission` (*kg CO<sub>2</sub>e*), and `hfc emission` (*kg CO<sub>2</sub>e*) to give *kg CO<sub>2</sub>e*.
             quorum 'from co2 emission, ch4 emission, n2o emission, and hfc emission', :needs => [:co2_emission, :ch4_emission, :n2o_emission, :hfc_emission],
@@ -50,7 +50,7 @@ module BrighterPlanet
           end
           
           #### CO<sub>2</sub> emission (*kg*)
-          # One passenger's share of the trip's CO<sub>2</sub> emissions from anthropogenic sources during `timeframe`.
+          # *One passenger's share of the trip's CO<sub>2</sub> emissions from anthropogenic sources during `timeframe`.*
           committee :co2_emission do
             # Multiply each `fuel use` (*l*) by the [fuel](http://data.brighterplanet.com/bus_fuels)'s co2 emission factor (*kg / l*) to give co2 emissions from each fuel (*kg*).
             # Sum the fuel co2 emissions to give *kg*.
@@ -84,7 +84,7 @@ module BrighterPlanet
           end
           
           #### CH<sub>4</sub> emission (*kg CO<sub>2</sub>e*)
-          # One passenger's share of the trip's CH<sub>4</sub> emissions during `timeframe`.
+          # *One passenger's share of the trip's CH<sub>4</sub> emissions during `timeframe`.*
           committee :ch4_emission do
             # Sum the `fuel uses` (*l*) to give total fuel use (*l*).
             # Divide each `fuel use` (*l*) by total fuel use (*l*) and multiply by `distance per passenger` (*km*) to give the distance attributed to each fuel (*km*).
@@ -109,7 +109,7 @@ module BrighterPlanet
           end
           
           #### N<sub>2</sub>O emission (*kg CO<sub>2</sub>e*)
-          # One passenger's share of the trip's N<sub>2</sub>O emissions during `timeframe`.
+          # *One passenger's share of the trip's N<sub>2</sub>O emissions during `timeframe`.*
           committee :n2o_emission do
             # Sum the `fuel uses` (*l*) to give total fuel use (*l*).
             # Divide each `fuel use` (*l*) by total fuel use (*l*) and multiply by `distance per passenger` (*km*) to give the distance attributed to each fuel (*km*).
@@ -134,7 +134,7 @@ module BrighterPlanet
           end
           
           #### HFC emission (*kg CO<sub>2</sub>e*)
-          # One passenger's share of the trip's HFC emissions during `timeframe`.
+          # *One passenger's share of the trip's HFC emissions during `timeframe`.*
           committee :hfc_emission do
             # Multiply `distance per passenger` (*km*) by the `bus class` air conditioning emission factor (*kg CO<sub>2</sub>e / km*) to give *kg CO<sub>2</sub>e*.
             quorum 'from distance per passenger and bus class', :needs => [:distance_per_passenger, :bus_class],
@@ -145,7 +145,7 @@ module BrighterPlanet
           
 =begin
           #### Energy (*MJ*)
-          # One passenger's share of the trip's energy use during `timeframe`.
+          # *One passenger's share of the trip's energy use during `timeframe`.*
           committee :energy do
             # Multiply each `fuel use` (*l*) by the [fuel](http://data.brighterplanet.com/bus_fuels)'s energy content (*MJ / l*) to give energy for each fuel (*MJ*).
             # Sum the fuel energies to give *MJ*.
@@ -166,7 +166,7 @@ module BrighterPlanet
 =end
           
           #### Fuel uses (*l*)
-          # One passenger's share of the trip's use of each of a variety of [bus fuels](http://data.brighterplanet.com/bus_fuels) during `timeframe`.
+          # *One passenger's share of the trip's use of each of a variety of [bus fuels](http://data.brighterplanet.com/bus_fuels) during `timeframe`.*
           committee :fuel_uses do
             # For each fuel, multiply `distance per passenger` (*km*) by the `bus class` fuel intensity for the fuel (*l / km*) to give *l*.
             quorum 'from distance per passenger and bus class', :needs => [:distance_per_passenger, :bus_class],
@@ -184,7 +184,7 @@ module BrighterPlanet
           end
           
           #### Distance per passenger (*km*)
-          # The distance traveled per passenger during `timeframe`.
+          # *The distance traveled per passenger during `timeframe`.*
           committee :distance_per_passenger do
             # If `date` falls within `timeframe`, divide `distance` (*km*) by `passengers` to give *km*.
             # Otherwise distance per passenger is zero.
@@ -199,7 +199,7 @@ module BrighterPlanet
           end
           
           #### Distance (*km*)
-          # The trip's distance.
+          # *The trip's distance.*
           committee :distance do
             # Use client input, if available.
             
@@ -209,16 +209,16 @@ module BrighterPlanet
                 characteristics[:duration] / 3600.0 * characteristics[:speed]
             end
             
-            # Otherwise look up the `bus class` average trip distance (*km*).
+            # Otherwise use the `bus class` average trip distance (*km*).
             quorum 'from bus class', :needs => :bus_class do |characteristics|
               characteristics[:bus_class].distance
             end
           end
           
           #### Speed (*km / hour*)
-          # The trip's average speed.
+          # *The trip's average speed.*
           committee :speed do
-            # Look up the [bus class](http://data.brighterplanet.com/bus_classes) average speed (*km / hour*).
+            # Use the [bus class](http://data.brighterplanet.com/bus_classes) average speed (*km / hour*).
             quorum 'from bus class', :needs => :bus_class,
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics|
                 characteristics[:bus_class].speed
@@ -226,14 +226,14 @@ module BrighterPlanet
           end
           
           #### Duration (*seconds*)
-          # The trip's duration.
+          # *The trip's duration.*
           #
-          # Use client input if available
+          # Use client input, if available.
           
           #### Passengers
-          # The number of passengers on the bus.
+          # *The number of passengers on the bus.*
           committee :passengers do
-            # Look up the [bus class](http://data.brighterplanet.com/bus_classes) average number of passengers.
+            # Use the [bus class](http://data.brighterplanet.com/bus_classes) average number of passengers.
             quorum 'from bus class', :needs => :bus_class,
               :complies => [:ghg_protocol_scope_3, :iso, :tcr] do |characteristics|
                 characteristics[:bus_class].passengers
@@ -241,7 +241,7 @@ module BrighterPlanet
           end
           
           #### Bus class
-          # The type of bus used.
+          # *The type of bus used.*
           committee :bus_class do
             # Use client input, if available.
             
@@ -253,7 +253,7 @@ module BrighterPlanet
           end
           
           #### Date (*date*)
-          # The day the trip occurred.
+          # *The day the trip occurred.*
           committee :date do
             # Use client input, if available.
             
