@@ -12,5 +12,3 @@ Sniff.init File.join(File.dirname(__FILE__), '..', '..'),
   :earth => :bus,
   :cucumber => true,
   :logger => 'log/test_log.txt'
-
-MAPQUEST_KEY = 'ABC123'
