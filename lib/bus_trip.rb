@@ -1,10 +1,10 @@
 require 'emitter'
 
-require 'automobile/impact_model'
-require 'automobile/characterization'
-require 'automobile/data'
-require 'automobile/relationships'
-require 'automobile/summarization'
+require 'bus_trip/impact_model'
+require 'bus_trip/characterization'
+require 'bus_trip/data'
+require 'bus_trip/relationships'
+require 'bus_trip/summarization'
 
 module BrighterPlanet
   module BusTrip
