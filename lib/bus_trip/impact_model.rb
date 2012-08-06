@@ -2,6 +2,9 @@
 # See LICENSE for details.
 # Contact Brighter Planet for dual-license arrangements.
 
+require 'earth/bus/bus_class'
+require 'earth/bus/bus_fuel'
+
 ### Bus trip impact model
 # This model is used by the [Brighter Planet](http://brighterplanet.com) [CM1 web service](http://impact.brighterplanet.com) to calculate the per-passenger impacts of a bus trip, such as energy use and greenhouse gas emissions.
 

@@ -1,3 +1,5 @@
+require 'earth/bus/bus_class'
+
 module BrighterPlanet
   module BusTrip
     module Relationships
