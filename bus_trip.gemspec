@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
   s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
   s.add_runtime_dependency 'earth', '~>1.0.0'
-  s.add_dependency 'emitter', '~> 1.0.0'
+  s.add_runtime_dependency 'emitter', '~> 1.1.0'
   s.add_development_dependency 'sniff', '~> 1.0.0'
 end
